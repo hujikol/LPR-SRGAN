@@ -1,12 +1,16 @@
 ## Available Scripts
 
-In the project directory, you can run:
+First run the virtual environment:
 
-### `source venv/Scripts/activate`
+```cmd
+source venv/Scripts/activate
+```
 
 Runs the Fast API server with uvicorn.\
 
-### `uvicorn main:app`
+```cmd
+uvicorn main:app
+```
 
 Open [http://localhost:8000](http://localhost:8000) to view the root in your browser, or use the router path to get another result.\
 
