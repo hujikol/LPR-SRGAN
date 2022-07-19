@@ -1,9 +1,27 @@
 ## Available Scripts
 
-First run the virtual environment:
+First install virtual environment
+
+```cmd
+pip install virtualenv
+```
+
+create virtual environment
+
+```cmd
+virtualenv venv
+```
+
+run virtual environment:
 
 ```cmd
 source venv/Scripts/activate
+```
+
+Install the required lib
+
+```cmd
+pip install -r requirements.txt
 ```
 
 Runs the Fast API server with uvicorn.\
