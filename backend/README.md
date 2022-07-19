@@ -14,8 +14,24 @@ virtualenv venv
 
 run virtual environment:
 
+if using gitbash
+
 ```cmd
 source venv/Scripts/activate
+```
+
+if using windows powershell
+
+change ExecutionPolicy
+
+```cmd
+Set-ExecutionPolicy Unrestricted -scope process
+```
+
+then to activate do
+
+```cmd
+.\venv\Scrips\activate
 ```
 
 Install the required lib
