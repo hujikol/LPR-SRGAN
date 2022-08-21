@@ -13,7 +13,7 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/History' element={<History />}>
+          <Route path='/history' element={<History />}>
             <Route path='' element={<HistoryList />} />
             <Route path=':postSlug' element={<HistoryDetail />} />
           </Route>

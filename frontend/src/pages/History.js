@@ -6,10 +6,12 @@ import { Outlet } from "react-router-dom";
 
 function History() {
   return (
-    <>
-      <h1> this is the history page </h1>
-      <Outlet />
-    </>
+    <div className='container mx-auto mt-16'>
+      <div className='flex flex-col'>
+        <h1 className='text-2xl font-bold self-center'>Halaman Riwayat</h1>
+        <Outlet />
+      </div>
+    </div>
   );
 }
 

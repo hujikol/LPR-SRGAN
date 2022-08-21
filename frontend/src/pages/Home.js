@@ -6,7 +6,13 @@
 import React from "react";
 
 function Home() {
-  return <h1> this is the homepage </h1>;
+  return (
+    <div className='container mx-auto mt-16'>
+      <div className='flex justify-center'>
+        <h1 className='text-2xl font-bold'>Sebuah Judul</h1>
+      </div>
+    </div>
+  );
 }
 
 export default Home;
