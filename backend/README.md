@@ -1,8 +1,44 @@
 ## Available Scripts
 
-In the project directory, you can run:
+First install virtual environment
 
-### `source venv/Scripts/activate`
+```cmd
+pip install virtualenv
+```
+
+create virtual environment
+
+```cmd
+virtualenv venv
+```
+
+run virtual environment:
+
+if using gitbash
+
+```cmd
+source venv/Scripts/activate
+```
+
+if using windows powershell
+
+change ExecutionPolicy
+
+```cmd
+Set-ExecutionPolicy Unrestricted -scope process
+```
+
+then to activate do
+
+```cmd
+.\venv\Scrips\activate
+```
+
+Install the required lib
+
+```cmd
+pip install -r requirements.txt
+```
 
 Runs the Fast API server with uvicorn.\
 
