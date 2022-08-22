@@ -4,6 +4,8 @@ import Home from "./pages/Home";
 import History from "./pages/History";
 import HistoryList from "./pages/HistoryList";
 import HistoryDetail from "./pages/HistoryDetail";
+import About from "./pages/About";
+
 import Navbar from "./components/Navbar";
 
 const App = () => {
@@ -17,6 +19,7 @@ const App = () => {
             <Route path='' element={<HistoryList />} />
             <Route path=':postSlug' element={<HistoryDetail />} />
           </Route>
+          <Route path='/tentang' element={<About />} />
         </Routes>
       </Router>
     </React.StrictMode>
