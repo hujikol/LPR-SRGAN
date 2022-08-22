@@ -8,7 +8,7 @@ function HistoryDetail() {
 
   return (
     <>
-      <h1>this is in the detailed post {postSlug}</h1>
+      <h1>Riwayat Pengenalan Karakter {postSlug}</h1>
     </>
   );
 }

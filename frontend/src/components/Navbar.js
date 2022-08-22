@@ -9,16 +9,16 @@ function Navbar() {
       <div className='flex flex-row justify-center'>
         <div className='px-4'>
           <NavLink className={`${pathName === "/" ? "font-bold" : ""}`} to=''>
-            Home
+            Uji Coba
           </NavLink>
         </div>
 
         <div className='px-4'>
           <NavLink
-            className={`${pathName === "/history" ? "font-bold" : ""}`}
-            to='/history'
+            className={`${pathName === "/riwayat" ? "font-bold" : ""}`}
+            to='/riwayat'
           >
-            History
+            Riwayat
           </NavLink>
         </div>
       </div>
