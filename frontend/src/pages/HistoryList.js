@@ -4,13 +4,289 @@ import { Link } from "react-router-dom";
 function HistoryList() {
   return (
     <div className='container mx-auto mt-8'>
-      <div className='flex flex-col items-center'>
-        <Link to='/riwayat/1'>
-          <h1> this is HistoryList number 1</h1>
-        </Link>
-        <Link to='/riwayat/2'>
-          <h1> this is HistoryList number 2</h1>
-        </Link>
+      <div className='flex flex-wrap md:justify-start xl:mx-24 lg:mx-2 md:mx-12 sm:justify-center'>
+        {/* Card Start */}
+        <div className='max-w-xs bg-white rounded-lg border border-gray-200 shadow-md m-2'>
+          {/* change Link Here */}
+          <Link to='/riwayat/2'>
+            <div className='max-h-52 overflow-hidden'>
+              <img
+                className='rounded-t-lg'
+                // change Image here
+                src={require("./../testAssets/3abf17e4fd8417d7.png")}
+                alt=''
+              />
+            </div>
+          </Link>
+          <div className='p-5'>
+            {/* change Link Here */}
+            <Link to='/riwayat/2'>
+              <h5 className='mb-2 text-2xl font-bold tracking-tight text-gray-700'>
+                Noteworthy technology acquisitions 2021
+              </h5>
+            </Link>
+            <p className='mb-3 font-normal text-gray-400'>
+              Here are the biggest enterprise technology acquisitions of 2021 so
+              far, in reverse chronological order.
+            </p>
+            {/* change Link Here */}
+            <Link
+              to='/riwayat/2'
+              className='inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-500 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300'
+            >
+              Detail
+              <svg
+                aria-hidden='true'
+                className='ml-2 -mr-1 w-4 h-4'
+                fill='currentColor'
+                viewBox='0 0 20 20'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  fill-rule='evenodd'
+                  d='M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z'
+                  clip-rule='evenodd'
+                ></path>
+              </svg>
+            </Link>
+          </div>
+        </div>
+        {/* Card Ends */}
+        {/* Card Start */}
+        <div className='max-w-xs bg-white rounded-lg border border-gray-200 shadow-md m-2'>
+          {/* change Link Here */}
+          <Link to='/riwayat/2'>
+            <div className='max-h-52 overflow-hidden'>
+              <img
+                className='rounded-t-lg'
+                // change Image here
+                src={require("./../testAssets/bacde20005949116.png")}
+                alt=''
+              />
+            </div>
+          </Link>
+          <div className='p-5'>
+            {/* change Link Here */}
+            <Link to='/riwayat/2'>
+              <h5 className='mb-2 text-2xl font-bold tracking-tight text-gray-700'>
+                Noteworthy technology acquisitions 2021
+              </h5>
+            </Link>
+            <p className='mb-3 font-normal text-gray-400'>
+              Here are the biggest enterprise technology acquisitions of 2021 so
+              far, in reverse chronological order.
+            </p>
+            {/* change Link Here */}
+            <Link
+              to='/riwayat/2'
+              className='inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-500 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300'
+            >
+              Detail
+              <svg
+                aria-hidden='true'
+                className='ml-2 -mr-1 w-4 h-4'
+                fill='currentColor'
+                viewBox='0 0 20 20'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  fill-rule='evenodd'
+                  d='M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z'
+                  clip-rule='evenodd'
+                ></path>
+              </svg>
+            </Link>
+          </div>
+        </div>
+        {/* Card Ends */}
+        {/* Card Start */}
+        <div className='max-w-xs bg-white rounded-lg border border-gray-200 shadow-md m-2'>
+          {/* change Link Here */}
+          <Link to='/riwayat/2'>
+            <div className='max-h-52 overflow-hidden'>
+              <img
+                className='rounded-t-lg'
+                // change Image here
+                src={require("./../testAssets/e9285b01323add66.png")}
+                alt=''
+              />
+            </div>
+          </Link>
+          <div className='p-5'>
+            {/* change Link Here */}
+            <Link to='/riwayat/2'>
+              <h5 className='mb-2 text-2xl font-bold tracking-tight text-gray-700'>
+                Noteworthy technology acquisitions 2021
+              </h5>
+            </Link>
+            <p className='mb-3 font-normal text-gray-400'>
+              Here are the biggest enterprise technology acquisitions of 2021 so
+              far, in reverse chronological order.
+            </p>
+            {/* change Link Here */}
+            <Link
+              to='/riwayat/2'
+              className='inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-500 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300'
+            >
+              Detail
+              <svg
+                aria-hidden='true'
+                className='ml-2 -mr-1 w-4 h-4'
+                fill='currentColor'
+                viewBox='0 0 20 20'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  fill-rule='evenodd'
+                  d='M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z'
+                  clip-rule='evenodd'
+                ></path>
+              </svg>
+            </Link>
+          </div>
+        </div>
+        {/* Card Ends */}
+        {/* Card Start */}
+        <div className='max-w-xs bg-white rounded-lg border border-gray-200 shadow-md m-2'>
+          {/* change Link Here */}
+          <Link to='/riwayat/2'>
+            <div className='max-h-52 overflow-hidden'>
+              <img
+                className='rounded-t-lg'
+                // change Image here
+                src={require("./../testAssets/3abf17e4fd8417d7.png")}
+                alt=''
+              />
+            </div>
+          </Link>
+          <div className='p-5'>
+            {/* change Link Here */}
+            <Link to='/riwayat/2'>
+              <h5 className='mb-2 text-2xl font-bold tracking-tight text-gray-700'>
+                Noteworthy technology acquisitions 2021
+              </h5>
+            </Link>
+            <p className='mb-3 font-normal text-gray-400'>
+              Here are the biggest enterprise technology acquisitions of 2021 so
+              far, in reverse chronological order.
+            </p>
+            {/* change Link Here */}
+            <Link
+              to='/riwayat/2'
+              className='inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-500 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300'
+            >
+              Detail
+              <svg
+                aria-hidden='true'
+                className='ml-2 -mr-1 w-4 h-4'
+                fill='currentColor'
+                viewBox='0 0 20 20'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  fill-rule='evenodd'
+                  d='M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z'
+                  clip-rule='evenodd'
+                ></path>
+              </svg>
+            </Link>
+          </div>
+        </div>
+        {/* Card Ends */}
+        {/* Card Start */}
+        <div className='max-w-xs bg-white rounded-lg border border-gray-200 shadow-md m-2'>
+          {/* change Link Here */}
+          <Link to='/riwayat/2'>
+            <div className='max-h-52 overflow-hidden'>
+              <img
+                className='rounded-t-lg'
+                // change Image here
+                src={require("./../testAssets/3abf17e4fd8417d7.png")}
+                alt=''
+              />
+            </div>
+          </Link>
+          <div className='p-5'>
+            {/* change Link Here */}
+            <Link to='/riwayat/2'>
+              <h5 className='mb-2 text-2xl font-bold tracking-tight text-gray-700'>
+                Noteworthy technology acquisitions 2021
+              </h5>
+            </Link>
+            <p className='mb-3 font-normal text-gray-400'>
+              Here are the biggest enterprise technology acquisitions of 2021 so
+              far, in reverse chronological order.
+            </p>
+            {/* change Link Here */}
+            <Link
+              to='/riwayat/2'
+              className='inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-500 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300'
+            >
+              Detail
+              <svg
+                aria-hidden='true'
+                className='ml-2 -mr-1 w-4 h-4'
+                fill='currentColor'
+                viewBox='0 0 20 20'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  fill-rule='evenodd'
+                  d='M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z'
+                  clip-rule='evenodd'
+                ></path>
+              </svg>
+            </Link>
+          </div>
+        </div>
+        {/* Card Ends */}
+        {/* Card Start */}
+        <div className='max-w-xs bg-white rounded-lg border border-gray-200 shadow-md m-2'>
+          {/* change Link Here */}
+          <Link to='/riwayat/2'>
+            <div className='max-h-52 overflow-hidden'>
+              <img
+                className='rounded-t-lg'
+                // change Image here
+                src={require("./../testAssets/3abf17e4fd8417d7.png")}
+                alt=''
+              />
+            </div>
+          </Link>
+          <div className='p-5'>
+            {/* change Link Here */}
+            <Link to='/riwayat/2'>
+              <h5 className='mb-2 text-2xl font-bold tracking-tight text-gray-700'>
+                Noteworthy technology acquisitions 2021
+              </h5>
+            </Link>
+            <p className='mb-3 font-normal text-gray-400'>
+              Here are the biggest enterprise technology acquisitions of 2021 so
+              far, in reverse chronological order.
+            </p>
+            {/* change Link Here */}
+            <Link
+              to='/riwayat/2'
+              className='inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-500 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300'
+            >
+              Detail
+              <svg
+                aria-hidden='true'
+                className='ml-2 -mr-1 w-4 h-4'
+                fill='currentColor'
+                viewBox='0 0 20 20'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  fill-rule='evenodd'
+                  d='M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z'
+                  clip-rule='evenodd'
+                ></path>
+              </svg>
+            </Link>
+          </div>
+        </div>
+        {/* Card Ends */}
       </div>
     </div>
   );

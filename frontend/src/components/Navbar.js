@@ -6,7 +6,7 @@ function Navbar() {
 
   return (
     <nav className='container mx-auto mt-8'>
-      <div className='flex flex-row justify-center'>
+      <div className='flex flex-row justify-center text-lg'>
         <div className='px-4'>
           <NavLink
             className={`${

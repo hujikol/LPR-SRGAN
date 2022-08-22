@@ -8,7 +8,7 @@ function History() {
   return (
     <div className='container mx-auto mt-16'>
       <div className='flex flex-col'>
-        <h1 className='text-2xl font-bold self-center'>
+        <h1 className='text-2xl font-bold text-center'>
           Riwayat Pengenalan Karakter
         </h1>
         <Outlet />
