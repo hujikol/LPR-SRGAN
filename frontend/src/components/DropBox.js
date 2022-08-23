@@ -55,26 +55,26 @@ function DropBox(props) {
 
   return (
     <div className='flex container flex-col justify-center items-center mx-auto mt-16 w-full'>
-      <div className='mx-auto w-2/3 hover:bg-gray-100'>
-        <div {...getRootProps({ className: "dropzone" })}>
-          <label
-            htmlFor='dropzone-file'
-            className='flex flex-col justify-center items-center h-64
+      <form action='/hasil' method='post'>
+        <div className='mx-auto hover:bg-gray-100'>
+          <div {...getRootProps({ className: "dropzone" })}>
+            <label
+              htmlFor='dropzone-file'
+              className='flex flex-col justify-center items-center h-64 px-12
             rounded-lg border-2 border-gray-300 border-dashed cursor-pointer'
-          >
-            <LabelText />
-            <input {...getInputProps()} />
-          </label>
+            >
+              <LabelText />
+              <input {...getInputProps()} />
+            </label>
+          </div>
         </div>
-      </div>
-      <div className='flex flex-col mt-4'>
         <button
-          className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-16 rounded'
+          className='flex mx-auto mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-16 rounded'
           type='submit'
         >
           Super!
         </button>
-      </div>
+      </form>
     </div>
   );
 }
