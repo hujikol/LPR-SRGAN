@@ -7,6 +7,7 @@ import HistoryDetail from "./pages/HistoryDetail";
 import About from "./pages/About";
 
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           </Route>
           <Route path='/tentang' element={<About />} />
         </Routes>
+        <Footer />
       </Router>
     </React.StrictMode>
   );

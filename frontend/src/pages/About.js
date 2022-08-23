@@ -2,7 +2,7 @@ import React from "react";
 
 function About() {
   return (
-    <div className='container mx-auto mt-16'>
+    <div className='container mx-auto mt-16 mb-32'>
       <div className='flex flex-col items-center'>
         <h1 className='text-2xl text-center font-bold'>
           Halo saya, <br /> Nicholas Nanda

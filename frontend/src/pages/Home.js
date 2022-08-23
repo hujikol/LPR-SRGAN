@@ -9,7 +9,7 @@ import DropBox from "./../components/DropBox";
 
 function Home() {
   return (
-    <div className='container mx-auto mt-16'>
+    <div className='container mx-auto mt-16 mb-32'>
       {/* tittle div */}
       <div className='flex justify-center'>
         <h1 className='text-2xl font-bold text-center'>

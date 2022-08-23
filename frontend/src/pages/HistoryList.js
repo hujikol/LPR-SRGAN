@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function HistoryList() {
   return (
     <div className='container mx-auto mt-8'>
-      <div className='flex flex-wrap md:justify-start xl:mx-24 lg:mx-2 md:mx-12 sm:justify-center'>
+      <div className='flex flex-wrap mx-auto md:justify-start xl:mx-24 lg:mx-2 md:mx-12 sm:justify-center'>
         {/* Card Start */}
         <div className='max-w-xs bg-white rounded-lg border border-gray-200 shadow-md m-2'>
           {/* change Link Here */}
@@ -60,7 +60,7 @@ function HistoryList() {
               <img
                 className='rounded-t-lg'
                 // change Image here
-                src={require("./../testAssets/bacde20005949116.png")}
+                src={require("./../testAssets/3abf17e4fd8417d7.png")}
                 alt=''
               />
             </div>
@@ -107,7 +107,7 @@ function HistoryList() {
               <img
                 className='rounded-t-lg'
                 // change Image here
-                src={require("./../testAssets/e9285b01323add66.png")}
+                src={require("./../testAssets/3abf17e4fd8417d7.png")}
                 alt=''
               />
             </div>

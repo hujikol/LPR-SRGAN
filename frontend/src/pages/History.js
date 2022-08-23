@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 
 function History() {
   return (
-    <div className='container mx-auto mt-16'>
+    <div className='container mx-auto mt-16 mb-32'>
       <div className='flex flex-col'>
         <h1 className='text-2xl font-bold text-center'>
           Riwayat Pengenalan Karakter
