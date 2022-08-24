@@ -17,7 +17,7 @@ function Result() {
   useEffect(() => {}, [postSlug]);
 
   return (
-    <div className='container mx-auto mt-2 mb-32'>
+    <div className='container mx-auto mt-2 mb-24'>
       <div className='flex flex-col items-center'>
         <div>
           <Link
@@ -45,7 +45,7 @@ function Result() {
           </h2>
         </div>
         {/* Main Image Start*/}
-        <div className='max-w-2xl mx-auto mt-2 rounded-lg border'>
+        <div className='max-w-2xl mx-auto mt-2 rounded-md'>
           <img
             className='rounded-t-lg'
             src={require("./../testAssets/3abf17e4fd8417d7.png")}

@@ -2,11 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function HistoryList() {
+  const date = "18:35:20 12/09/2022";
   return (
     <div className='container mx-auto mt-8'>
-      <div className='flex flex-wrap mx-auto md:justify-start xl:mx-24 lg:mx-2 md:mx-12 sm:justify-center'>
+      <div className='flex flex-wrap xl:ml-24 lg:mx-2 md:mx-12 md:justify-start sm:justify-center'>
         {/* Card Start */}
-        <div className='max-w-xs bg-white rounded-lg border border-gray-200 shadow-md m-2'>
+        <div className='max-w-xs max-h-96 bg-white rounded-lg border border-gray-200 shadow-md m-2'>
           {/* change Link Here */}
           <Link to='/riwayat/2'>
             <div className='max-h-52 overflow-hidden'>
@@ -22,12 +23,15 @@ function HistoryList() {
             {/* change Link Here */}
             <Link to='/riwayat/2'>
               <h5 className='mb-2 text-2xl font-bold tracking-tight text-gray-700'>
-                Noteworthy technology acquisitions 2021
+                B 1234 CXS{" "}
+                <span className='mb-3 text-xl font-normal text-gray-400'>
+                  , 2 lainnya..
+                </span>
               </h5>
             </Link>
             <p className='mb-3 font-normal text-gray-400'>
-              Here are the biggest enterprise technology acquisitions of 2021 so
-              far, in reverse chronological order.
+              Diproses Pada: <br />
+              {date}
             </p>
             {/* change Link Here */}
             <Link
