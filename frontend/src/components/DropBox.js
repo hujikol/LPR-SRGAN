@@ -60,7 +60,7 @@ function DropBox(props) {
           <div {...getRootProps({ className: "dropzone" })}>
             <label
               htmlFor='dropzone-file'
-              className='flex flex-col justify-center items-center h-64 px-12
+              className='flex flex-col justify-center items-center h-64 px-12 -z-10
             rounded-lg border-2 border-gray-300 border-dashed cursor-pointer'
             >
               <LabelText />

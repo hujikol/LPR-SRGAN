@@ -22,8 +22,8 @@ class FileType(str, Enum):
 async def root():
     return {"message": "Hello World"}
 
-@app.get("/history/current-inference")
-async def read_current_history():
+@app.get("/current-inference")
+async def current_inference():
     return {"history_id": "the current user"}
 
 @app.get("/history/all")

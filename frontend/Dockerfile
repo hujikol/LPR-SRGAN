@@ -2,7 +2,7 @@ FROM node:16-alpine
 
 ENV NODE_ENV development
 
-EXPOSE 5000
+EXPOSE 3000
 WORKDIR /home/app
 
 COPY package.json .
@@ -13,4 +13,4 @@ RUN npm install react-scripts
 
 COPY . .
 
-CMD ["npm", "run", "start"]
+CMD ["npm", "start", "--port", "3000"]
