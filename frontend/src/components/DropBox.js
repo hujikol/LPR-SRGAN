@@ -72,12 +72,12 @@ function DropBox(props) {
 
   return (
     <div className='flex container flex-col justify-center items-center mx-auto mt-16 w-full'>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} enctype='multipart/form-data'>
         <div className='mx-auto hover:bg-gray-100'>
           <div {...getRootProps({ className: "dropzone" })}>
             <label
               htmlFor='dropzone-file'
-              className='flex flex-col justify-center items-center h-64 px-12 -z-10
+              className='flex flex-col justify-center items-center h-64 px-12
             rounded-lg border-2 border-gray-300 border-dashed cursor-pointer'
             >
               <LabelText />
