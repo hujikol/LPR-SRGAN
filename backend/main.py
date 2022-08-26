@@ -1,9 +1,16 @@
+import os
 import aiofiles
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from enum import Enum
 from sqlalchemy import text
 from db import db
+
+WORKSPACE = os.environ.get('WORKSPACE')
+
+INPUT_IMG_PATH = "{}/image-dataset/highres-img/".format(WORKSPACE)
+CROP_IMG_PATH = "{}/image-dataset/cropped-img".format(WORKSPACE)
+SUPER_IMG_PATH = "{}/image-dataset/super-result".format(WORKSPACE)
 
 app = FastAPI()
 
@@ -20,10 +27,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-input_img_path = "/image-dataset/highres-img/"
-crop_img_path = "/image-dataset/cropped-img"
-super_img_path = "/image-dataset/super-result"
-
 @app.on_event("startup")
 async def startup():
     await db.database.connect()
@@ -37,9 +40,10 @@ async def root():
     return {"message": "Hello World"}
 
 @app.post("/inference")
-async def inference(in_file: UploadFile=File(...)):
-    async with aiofiles.open(input_img_path, 'wb') as out_file:
+async def inference(in_file: UploadFile=File(...)):    
+    async with aiofiles.open(INPUT_IMG_PATH, 'wb') as out_file:
         content = await in_file.read()
+        print(content)
         await out_file.write(content)
 
     return {"Result": "OK"}
