@@ -164,3 +164,19 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/python
+
+*.db
+image-dataset/cropped-img/*.jpg
+image-dataset/cropped-img/*.jpeg
+
+image-dataset/highres-img/*.jpeg
+image-dataset/highres-img/*.jpg
+
+image-dataset/lowres-img/*.jpg
+image-dataset/lowres-img/*.jpeg
+
+image-dataset/super-result/*.jpeg
+image-dataset/super-result/*.jpg
+
+image-dataset/test-folder/*.jpg
+image-dataset/test-folder/*.jpeg
