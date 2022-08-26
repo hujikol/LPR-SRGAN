@@ -13,3 +13,5 @@ databases
 sqlalchemy
 pydantic
 aiosqlite
+aiofiles
+python-multipart

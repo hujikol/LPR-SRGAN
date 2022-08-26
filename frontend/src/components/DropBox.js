@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import { useDropzone } from "react-dropzone";
 
 function DropBox(props) {
@@ -41,6 +42,22 @@ function DropBox(props) {
     );
   }
 
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("acceptedFiles", acceptedFiles);
+    try {
+      await axios({
+        method: "post",
+        url: "http://localhost:3000/inference",
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   function LabelText(props) {
     if (fileRejectionItems[0]) {
       return fileRejectionItems;
@@ -55,7 +72,7 @@ function DropBox(props) {
 
   return (
     <div className='flex container flex-col justify-center items-center mx-auto mt-16 w-full'>
-      <form action='/hasil' method='post'>
+      <form onSubmit={handleSubmit}>
         <div className='mx-auto hover:bg-gray-100'>
           <div {...getRootProps({ className: "dropzone" })}>
             <label
