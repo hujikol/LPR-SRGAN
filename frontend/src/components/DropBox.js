@@ -15,7 +15,8 @@ function DropBox(props) {
       <li className='font-bold text-center list-none' key={file.path}>
         Uploaded File:
         <br />
-        {file.path} - {file.size} bytes
+        {file.path} - {file.size} bytes{" "}
+        {console.log("filename:", acceptedFiles)}
       </li>
     </div>
   ));
@@ -45,11 +46,12 @@ function DropBox(props) {
   async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData();
-    formData.append("acceptedFiles", acceptedFiles);
+    const [file] = acceptedFiles;
+    formData.append("file", file);
     try {
       await axios({
         method: "post",
-        url: "http://localhost:3000/inference",
+        url: "http://localhost:8000/inference",
         data: formData,
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -72,7 +74,7 @@ function DropBox(props) {
 
   return (
     <div className='flex container flex-col justify-center items-center mx-auto mt-16 w-full'>
-      <form onSubmit={handleSubmit} enctype='multipart/form-data'>
+      <form onSubmit={handleSubmit}>
         <div className='mx-auto hover:bg-gray-100'>
           <div {...getRootProps({ className: "dropzone" })}>
             <label
