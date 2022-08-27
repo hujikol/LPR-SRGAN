@@ -1,16 +1,14 @@
-import os
-from .utils import preprocess
 from fastapi import FastAPI
 from middleware import initMiddleware
 from db import db
-from .routers import predict
+from routers import predict
 
 app = FastAPI()
 
 initMiddleware(app)
 
 app.include_router(predict.router)
-app.include_router(preprocess.router)
+# app.include_router(preprocess.router)
 
 @app.on_event("startup")
 async def startup():

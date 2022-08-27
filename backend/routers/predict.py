@@ -1,11 +1,11 @@
 import aiofiles
 import zipfile 
-
+from sqlalchemy.orm import Session
 from io import BytesIO
 from fastapi import APIRouter, File, UploadFile, HTTPException, responses
 from sqlalchemy import select
 from db import db, tables
-from utils import variables, preprocess
+from utils import variables
 
 router = APIRouter()
 
@@ -13,20 +13,38 @@ router = APIRouter()
 async def root():
     return {"message": "Hello World"}
 
-@router.post("/inference")
-async def inference(file: UploadFile = File(...)):
+@router.post("/upload-img")
+async def upload_img(file: UploadFile = File(...)):
     if file.content_type != "image/jpeg":
-        raise HTTPException(status_code=415, detail="Only support .jpg file")
+        raise HTTPException(status_code=415, detail="Only support .jpg or .jpeg file")
 
-    output_file = "{}/{}".format(variables.INPUT_IMG_PATH, file.filename) #ganti nama file 
+    filename = file.filename
+    output_file = "{}/{}".format(variables.INPUT_IMG_PATH, filename) #ganti nama file 
     async with aiofiles.open(output_file, 'wb') as out_file:
-        query = "INSERT INTO tbl_img_input (img_path) VALUES ('{}')".format(file.filename)
-        results = db.engine.execute(query)
+        img_input_obj = db.ImgInput(img_path=filename)
+        with Session(db.engine) as session:
+            session.add(img_input_obj)
+            session.commit()
+            session.close()
 
         content = await file.read()
         await out_file.write(content)
 
-    return {"filename": file.filename, "results": results}
+    return {"id": img_input_obj.id, "img_path": img_input_obj.img_path}
+
+@router.post("/predict/{img_id}")
+async def predict(img_id):
+    query = select(db.ImgInput).where(db.ImgInput.id==img_id)
+    with Session(db.engine) as session:
+        result = session.execute(query).fetchone()[0]
+        session.close()
+    if not result:
+        raise HTTPException(status_code=400, detail="Image id not found")
+    
+    # result.img_path will return filename
+    # CALL PREDICT HERE
+    return {"success": 200}
+
 
 @router.get("/history/all")
 async def read_all_history():
