@@ -180,3 +180,5 @@ image-dataset/super-result/*.jpg
 
 image-dataset/test-folder/*.jpg
 image-dataset/test-folder/*.jpeg
+
+json_result/*.json
