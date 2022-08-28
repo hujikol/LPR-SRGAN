@@ -51,9 +51,11 @@ function DropBox(props) {
     try {
       await axios({
         method: "post",
-        url: "http://localhost:8000/inference",
+        url: "http://localhost:8000/upload-img",
         data: formData,
         headers: { "Content-Type": "multipart/form-data" },
+      }).then(function (response) {
+        console.log("ini response:", response);
       });
     } catch (error) {
       console.log(error);
