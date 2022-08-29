@@ -1,8 +1,11 @@
 import React from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 
 function DropBox(props) {
+  let navigate = useNavigate();
+
   const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
     useDropzone({
       accept: {
@@ -16,7 +19,6 @@ function DropBox(props) {
         Uploaded File:
         <br />
         {file.path} - {file.size} bytes{" "}
-        {console.log("filename:", acceptedFiles)}
       </li>
     </div>
   ));
@@ -55,7 +57,7 @@ function DropBox(props) {
         data: formData,
         headers: { "Content-Type": "multipart/form-data" },
       }).then(function (response) {
-        console.log("ini response:", response);
+        navigate("/proses", { state: response.data });
       });
     } catch (error) {
       console.log(error);

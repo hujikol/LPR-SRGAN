@@ -19,19 +19,15 @@
 // }
 
 {
-    "configurations": [
-      {
-        "name": "Python: Debug FAST API",
-        "type": "python",
-        "request": "attach",
-        "port": 9003,
-        "host": "0.0.0.0",
-        "pathMappings": [
-          {
-            "localRoot": "${workspaceFolder}/backend",
-            "remoteRoot": "/home/app"
-          }
-        ]
-      }
-    ]
-  }
+  "configurations": [{
+    "name": "Python: Debug FAST API",
+    "type": "python",
+    "request": "attach",
+    "port": 9003,
+    "host": "0.0.0.0",
+    "pathMappings": [{
+      "localRoot": "${workspaceFolder}/backend",
+      "remoteRoot": "/home/app"
+    }]
+  }]
+}
