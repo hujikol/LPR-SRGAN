@@ -25,7 +25,7 @@ class LimitUploadSize(BaseHTTPMiddleware):
         return await call_next(request)
     
 # REGISTER MIDDLEWARE
-def initMiddleware(app: ASGIApp) -> None:
+def initMiddleware(app: ASGIApp):
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,

@@ -25,12 +25,16 @@ async def upload_img(file: UploadFile = File(...)):
         with Session(db.engine) as session:
             session.add(img_input_obj)
             session.commit()
+            
+            img_id = img_input_obj.id
+            img_path = img_input_obj.img_path
+            
             session.close()
 
         content = await file.read()
         await out_file.write(content)
 
-    return {"id": img_input_obj.id, "img_path": img_input_obj.img_path}
+    return {"id": img_id, "img_path": img_path}
 
 @router.post("/predict/{img_id}")
 async def predict(img_id):

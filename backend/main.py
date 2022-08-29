@@ -8,7 +8,6 @@ app = FastAPI()
 initMiddleware(app)
 
 app.include_router(predict.router)
-# app.include_router(preprocess.router)
 
 @app.on_event("startup")
 async def startup():
