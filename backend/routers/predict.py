@@ -1,5 +1,6 @@
 import aiofiles
 import zipfile 
+import time
 from sqlalchemy.orm import Session
 from io import BytesIO
 from fastapi import APIRouter, File, UploadFile, HTTPException, responses
@@ -27,24 +28,26 @@ async def upload_img(file: UploadFile = File(...)):
             session.commit()
             
             img_id = img_input_obj.id
-            img_path = img_input_obj.img_path
+            # img_path = img_input_obj.img_path
             
             session.close()
 
         content = await file.read()
         await out_file.write(content)
 
-    return {"id": img_id, "img_path": img_path}
+    return {"id": img_id}
 
+# get img bounding-box
 @router.post("/predict/{img_id}")
 async def predict(img_id):
-    query = select(db.ImgInput).where(db.ImgInput.id==img_id)
-    with Session(db.engine) as session:
-        result = session.execute(query).fetchone()[0]
-        session.close()
-    if not result:
-        raise HTTPException(status_code=400, detail="Image id not found")
+    # query = select(db.ImgInput).where(db.ImgInput.id==img_id)
+    # with Session(db.engine) as session:
+    #     result = session.execute(query).fetchone()[0]
+    #     session.close()
+    # if not result:
+    #     raise HTTPException(status_code=400, detail="Image id not found")
     
+    time.sleep(7)
     # result.img_path will return filename
     # CALL PREDICT HERE
     return {"success": 200}

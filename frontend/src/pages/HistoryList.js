@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 function HistoryList() {
   const [historyList, setHistoryList] = useState([]);
+
   useEffect(() => {
     fetch("http://localhost:8000/image")
       .then((response) => response.json())
