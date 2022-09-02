@@ -6,9 +6,9 @@ services:
     ports: 
       - "8000:8000"
     volumes:
-      - ./backend:/home/app
+      - ./backend/app:/home/app/app
     environment:
-      - WORKSPACE=/home/app    
+      - WORKSPACE=/home/app/app    
   frontend:
     build: ./frontend
     ports: 

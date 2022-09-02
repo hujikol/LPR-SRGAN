@@ -9,7 +9,7 @@ from io import BytesIO
 from fastapi import APIRouter, File, UploadFile, HTTPException, responses
 from sqlalchemy import select
 from db import db, tables
-from utils import variables
+from utils import variables, preprocess, bounding_box
 
 router = APIRouter()
 
@@ -54,9 +54,10 @@ async def predict(img_id):
     
     # call darknet to run yolov4
     # !./darknet detector test <LPR/obj.data> <LPR/darknet/yolov4-obj.cfg> <LPR/detectionBKP/yolov4-obj_last.weights> -ext_output <LPR/testingLP/testLokalisasi.jpg> -dont_show -out <predictResult.txt>
-    subprocess.run(["./darknet", "detector", "test", variables.OBJ_DATA_PATH, variables.CFG_PATH, variables.YOLO_WEIGHT_PATH, "-ext_output", img_path, "-dont_show", "-out"], variables.TXT_RESULT_PATH)
+    subprocess.run(["darknet", "detector", "test", variables.OBJ_DATA_PATH, variables.CFG_PATH, variables.YOLO_WEIGHT_PATH, "-ext_output", img_path, "-dont_show", "-out"], variables.TXT_RESULT_PATH)
 
     # call utils get bounding-box coordinate
+    
     
     # save collected bounding box to DB
 
