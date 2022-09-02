@@ -1,6 +1,7 @@
 import aiofiles
 import zipfile 
 import time
+
 from sqlalchemy.orm import Session
 from io import BytesIO
 from fastapi import APIRouter, File, UploadFile, HTTPException, responses
@@ -51,7 +52,6 @@ async def predict(img_id):
     # result.img_path will return filename
     # CALL PREDICT HERE
     return {"success": 200}
-
 
 @router.get("/history/all")
 async def read_all_history():
