@@ -13,3 +13,6 @@ YOLO_WEIGHT_PATH = "{}/model".format(WORKSPACE)
 
 MODEL_SRGAN_PATH = "{}/model".format(WORKSPACE)
 TXT_RESULT_PATH = "{}/json-result".format(WORKSPACE)
+
+MODEL_PATH = "{}/model".format(WORKSPACE)
+JSON_RESULT_PATH = "{}/json-result".format(WORKSPACE)
