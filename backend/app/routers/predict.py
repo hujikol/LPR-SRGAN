@@ -1,6 +1,8 @@
 import aiofiles
 import zipfile 
 import time
+import subprocess
+
 
 from sqlalchemy.orm import Session
 from io import BytesIO
@@ -38,19 +40,27 @@ async def upload_img(file: UploadFile = File(...)):
 
     return {"id": img_id}
 
-# get img bounding-box
-@router.post("/predict/{img_id}")
+# get img bounding-box and save to db BoundingBox
+@router.post("/get-boundingbox/{img_id}")
 async def predict(img_id):
-    # query = select(db.ImgInput).where(db.ImgInput.id==img_id)
-    # with Session(db.engine) as session:
-    #     result = session.execute(query).fetchone()[0]
-    #     session.close()
-    # if not result:
-    #     raise HTTPException(status_code=400, detail="Image id not found")
+    query = select(db.ImgInput).where(db.ImgInput.id==img_id)
+    with Session(db.engine) as session:
+        result = session.execute(query).fetchone()[0]
+        img_path = result.img_path
+        
+        session.close()
+    if not result:
+        raise HTTPException(status_code=400, detail="Image id not found")
     
-    time.sleep(7)
-    # result.img_path will return filename
-    # CALL PREDICT HERE
+    # call darknet to run yolov4
+    # !./darknet detector test <LPR/obj.data> <LPR/darknet/yolov4-obj.cfg> <LPR/detectionBKP/yolov4-obj_last.weights> -ext_output <LPR/testingLP/testLokalisasi.jpg> -dont_show -out <predictResult.txt>
+    subprocess.run(["./darknet", "detector", "test", variables.OBJ_DATA_PATH, variables.CFG_PATH, variables.YOLO_WEIGHT_PATH, "-ext_output", img_path, "-dont_show", "-out"], variables.TXT_RESULT_PATH)
+
+    # call utils get bounding-box coordinate
+    
+    # save collected bounding box to DB
+
+    # return db bounding box id
     return {"success": 200}
 
 @router.get("/history/all")
