@@ -5,10 +5,10 @@ import ScaleLoader from "react-spinners/ScaleLoader";
 
 const getDescription = (num) => {
   if (num === 1) {
-    return "Set up 1";
+    return "Done Uploading, starting to search plates";
   }
   if (num === 2) {
-    return "Set up 2";
+    return "Found the plates! starting to do super magic!";
   }
   if (num === 3) {
     return "Set up 3";
@@ -16,7 +16,7 @@ const getDescription = (num) => {
   if (num === 4) {
     return "Set up 4";
   }
-  return "Error";
+  return "I'm sorry but no magic for today! Something was wrong!";
 };
 
 function Loading() {
@@ -32,7 +32,7 @@ function Loading() {
 
   const predictImage = useCallback(async () => {
     try {
-      const res1 = await client.post(`/predict/${location.state.id}`);
+      const res1 = await client.post(`/get-bounding-box/${location.state.id}`);
       console.log(res1);
       if (res1) {
         setTaskNum(2);
@@ -64,8 +64,9 @@ function Loading() {
           width={8}
         />
         <div className='mt-6 text-xl font-medium'>Doing Some Magic!</div>
-        <span className='mt-1 font-medium text-gray-500'>
-          {taskNum}/4 Task, {getDescription(taskNum)}.
+        <span className='mt-1 text-center font-medium text-gray-500'>
+          {taskNum}/4 Task
+          <br /> {getDescription(taskNum)}
         </span>
       </div>
     </div>

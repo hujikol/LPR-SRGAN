@@ -1,5 +1,5 @@
 classes = 1
 train = ../image-dataset/train/train.txt
 valid = ../image-dataset/test/test.txt
-names = ./obj.names
-backup = ./
+names = ./model/obj.names
+backup = ./model/

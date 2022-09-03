@@ -3,7 +3,6 @@ import zipfile
 import time
 import subprocess
 
-
 from sqlalchemy.orm import Session
 from io import BytesIO
 from fastapi import APIRouter, File, UploadFile, HTTPException, responses
@@ -31,7 +30,6 @@ async def upload_img(file: UploadFile = File(...)):
             session.commit()
             
             img_id = img_input_obj.id
-            # img_path = img_input_obj.img_path
             
             session.close()
 
@@ -41,8 +39,8 @@ async def upload_img(file: UploadFile = File(...)):
     return {"id": img_id}
 
 # get img bounding-box and save to db BoundingBox
-@router.post("/get-boundingbox/{img_id}")
-async def predict(img_id):
+@router.post("/get-bounding-box/{img_id}")
+async def get_bounding_box(img_id):
     query = select(db.ImgInput).where(db.ImgInput.id==img_id)
     with Session(db.engine) as session:
         result = session.execute(query).fetchone()[0]
@@ -52,27 +50,52 @@ async def predict(img_id):
     if not result:
         raise HTTPException(status_code=400, detail="Image id not found")
     
+    img_path = variables.INPUT_IMG_PATH + "/" + img_path
+    
     # call darknet to run yolov4
     # !./darknet detector test <LPR/obj.data> <LPR/darknet/yolov4-obj.cfg> <LPR/detectionBKP/yolov4-obj_last.weights> -ext_output <LPR/testingLP/testLokalisasi.jpg> -dont_show -out <predictResult.txt>
-    subprocess.run(["darknet", "detector", "test", variables.OBJ_DATA_PATH, variables.CFG_PATH, variables.YOLO_WEIGHT_PATH, "-ext_output", img_path, "-dont_show", "-out"], variables.TXT_RESULT_PATH)
+    subprocess.run(["darknet", "detector", "test", variables.OBJ_DATA_PATH, variables.CFG_PATH, variables.YOLO_WEIGHT_PATH, "-ext_output", img_path, "-dont_show", "-out", variables.TXT_RESULT_PATH])
 
     # call utils get bounding-box coordinate
-    
-    
-    # save collected bounding box to DB
+    bounding_data = bounding_box.getBoundingBox(variables.TXT_RESULT_PATH)
+    bounding_box_id = []
+    # save bounding box data for every object in image
+    for obj_count in range(len(bounding_data)):
+        # save collected bounding box to DB
+        bounding_box_data = db.BoundingBox(
+            img_input_id = img_id,
+            yolo_confidence = bounding_data[obj_count][6],
+            center_x = bounding_data[obj_count][2],
+            center_y = bounding_data[obj_count][3],
+            width = bounding_data[obj_count][4],
+            height = bounding_data[obj_count][5]
+            )
+        
+        with Session(db.engine) as session:
+            session.add(bounding_box_data)
+            session.commit()
+            
+            bounding_box_id.append(bounding_box_data.id)
+            
+            session.close()
 
     # return db bounding box id
-    return {"success": 200}
+    return {"bounding_box_id": bounding_box_id}
 
-@router.get("/history/all")
+# extract plates from img_input
+@router.post("/get-cropped-img/{bounding_box_id}")
+async def get_cropped_img(bounding_box_id):
+    return {"response":"200 OK"}
+
+@router.get("/get-history/all")
 async def read_all_history():
     return {"history_id": ['id_list_and_data']}
 
-@router.get("/history/{inference_id}")
+@router.get("/get-history/{inference_id}")
 async def specific_history(inference_id: int):
     return {"history_id": inference_id}
 
-@router.get('/image')
+@router.get('/get-image')
 def get_all_image_path():
     query = select(tables.tbl_img_input)
     results = db.engine.execute(query).fetchall()
@@ -81,7 +104,7 @@ def get_all_image_path():
         payload.append(row)
     return payload
 
-@router.get('/image/{image_id}')
+@router.get('/get-one-image/{image_id}')
 def get_image(image_id):
     query = select(tables.tbl_img_input).where(tables.tbl_img_input.c.id==image_id)
     result = db.engine.execute(query).fetchone()
@@ -93,7 +116,7 @@ def get_image(image_id):
     
     return responses.FileResponse(file_location)
 
-@router.get('/zip-image/{image_ids}')
+@router.get('/get-multiple-image/{image_ids}')
 def get_zip_image(image_ids):    
     ids = tuple(map(int, image_ids.split(",")))
     query = select(tables.tbl_img_input).filter(tables.tbl_img_input.c.id.in_(ids))

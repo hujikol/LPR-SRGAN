@@ -7,10 +7,10 @@ services:
       - "8000:8000"
       - "9003:9003"
     volumes:
-      - ./backend:/home/app
+      - ./backend/app:/home/app/app
     environment:
-      - WORKSPACE=/home/app    
-    command: ["sh", "-c", "pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:9003 -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload"]
+      - WORKSPACE=/home/app/app    
+    command: ["sh", "-c", "pip3 install debugpy -t /tmp && python3 /tmp/debugpy --wait-for-client --listen 0.0.0.0:9003 -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload"]
 
   frontend:
     build: ./frontend

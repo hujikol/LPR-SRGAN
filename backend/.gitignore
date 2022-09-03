@@ -187,3 +187,4 @@ json_result/*.json
 darknet/
 
 app/model/*.weights
+app/*.list

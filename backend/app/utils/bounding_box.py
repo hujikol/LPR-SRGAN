@@ -25,8 +25,8 @@ def get_data(distros_dict):
 
 def getBoundingBox(text_file_path):
     with open(text_file_path, 'r') as f:
-        distros_dict_train = json.load(f)
+        json_data = json.load(f)
 
-    json_data = get_data(distros_dict_train)
+    json_data = get_data(json_data)
     # [{frame_id} {class_id} {x} {y} {width} {height} {confidence}]
     return json_data

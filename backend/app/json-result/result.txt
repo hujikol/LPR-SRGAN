@@ -1,0 +1,9 @@
+[
+{
+ "frame_id":1, 
+ "filename":"/home/app/app/image-dataset/highres-img/image242.jpg", 
+ "objects": [ 
+  {"class_id":0, "name":"license_plate", "relative_coordinates":{"center_x":0.387606, "center_y":0.668649, "width":0.277923, "height":0.106342}, "confidence":0.992410}
+ ] 
+}
+]
