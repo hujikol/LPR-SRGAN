@@ -1,4 +1,4 @@
-from unittest import result
+from unittest import async_case, result
 import aiofiles
 import zipfile 
 import subprocess
@@ -8,9 +8,9 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 from io import BytesIO
 from fastapi import APIRouter, File, UploadFile, HTTPException, responses
-from sqlalchemy import select
+from sqlalchemy import select, update
 from db import db
-from utils import variables, preprocess, bounding_box, crop_img
+from utils import variables, super_img, bounding_box, crop_img
 
 router = APIRouter()
 
@@ -138,6 +138,41 @@ async def get_cropped_img(img_id):
                 
     session.close()
     
+    return {"historyId" : history_id}
+
+@router.post("/super-img/{history_id}")
+async def get_super_resolution_img(history_id):
+    queryCnS = select(db.CroppedAndSuper).where(db.CroppedAndSuper.history_id == history_id)
+    
+    with Session(db.engine) as session:
+        # get cropped img
+        resultCnS = session.execute(queryCnS).fetchall()
+
+        img_index = 0
+        # for all cropped img create super resolution img
+        for row in resultCnS:
+            
+            # get cropped img path
+            queryCropImg = select(db.CroppedImg).where(db.CroppedImg.id == row.CroppedAndSuper.cropped_img_id)
+            cropImg = session.execute(queryCropImg).fetchone()
+            croppedImg_path = cropImg[0].img_path
+            
+            # get super resolution img path
+            super_img_path = super_img.get_super_img(croppedImg_path, img_index)
+            img_index += 1
+            
+            # saving each super img to SuperImg db
+            super_img_obj = db.SuperImg(img_path = super_img_path)
+            session.add(super_img_obj)
+            session.commit()
+            super_img_id = super_img_obj.id
+            
+            # save super img id to CroppedAndSuper tbl based on CroppedAndSuper id
+            updateCnS = update(db.CroppedAndSuper).where(db.CroppedAndSuper.id == row.CroppedAndSuper.id).values(super_img_id = super_img_id)
+            session.execute(updateCnS)
+            session.commit()
+                
+    session.close()
     return {"historyId" : history_id}
 
 @router.get("/get-history/all")

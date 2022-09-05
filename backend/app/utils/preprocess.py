@@ -25,6 +25,16 @@ def normalize_img(img):
     
     return img_arr
 
+def denormalize_img(img_arr):
+    img = img_arr * 255.
+    
+    return img[0,:,:,:]
+
+def resize_img(img):
+    img = cv2.resize(img,(64,32))
+    
+    return img
+
 # img thresholding before easy ocr
 def tresholding(img_path):
     img = open_img(img_path)
