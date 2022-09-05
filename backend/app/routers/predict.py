@@ -1,16 +1,21 @@
+from unittest import result
 import aiofiles
 import zipfile 
-import time
 import subprocess
+import os
 
+from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 from io import BytesIO
 from fastapi import APIRouter, File, UploadFile, HTTPException, responses
 from sqlalchemy import select
-from db import db, tables
-from utils import variables, preprocess, bounding_box
+from db import db
+from utils import variables, preprocess, bounding_box, crop_img
 
 router = APIRouter()
+
+timeNow = datetime.now().replace(tzinfo=timezone.utc).strftime("%d-%m-%Y %H:%M:%S")
+
 
 @router.get("/")
 async def root():
@@ -21,15 +26,23 @@ async def upload_img(file: UploadFile = File(...)):
     if file.content_type != "image/jpeg":
         raise HTTPException(status_code=415, detail="Only support .jpg or .jpeg file")
 
-    filename = file.filename
-    output_file = "{}/{}".format(variables.INPUT_IMG_PATH, filename) #ganti nama file 
+    output_file = "{}/img_input_{}.jpg".format(variables.INPUT_IMG_PATH, timeNow)
+    
     async with aiofiles.open(output_file, 'wb') as out_file:
-        img_input_obj = db.ImgInput(img_path=filename)
+        img_input_obj = db.ImgInput(img_path = output_file)
         with Session(db.engine) as session:
+            # saving into ImgInput db
             session.add(img_input_obj)
             session.commit()
             
             img_id = img_input_obj.id
+            
+            # saving into History db
+            history_obj = db.History(img_input_id = img_id)
+            session.add(history_obj)
+            session.commit()
+            
+            img_id = history_obj.img_input_id
             
             session.close()
 
@@ -41,16 +54,14 @@ async def upload_img(file: UploadFile = File(...)):
 # get img bounding-box and save to db BoundingBox
 @router.post("/get-bounding-box/{img_id}")
 async def get_bounding_box(img_id):
-    query = select(db.ImgInput).where(db.ImgInput.id==img_id)
+    query = select(db.ImgInput).where(db.ImgInput.id == img_id)
     with Session(db.engine) as session:
         result = session.execute(query).fetchone()[0]
         img_path = result.img_path
         
         session.close()
     if not result:
-        raise HTTPException(status_code=400, detail="Image id not found")
-    
-    img_path = variables.INPUT_IMG_PATH + "/" + img_path
+        raise HTTPException(status_code = 400, detail = "Image id not found")
     
     # call darknet to run yolov4
     # !./darknet detector test <LPR/obj.data> <LPR/darknet/yolov4-obj.cfg> <LPR/detectionBKP/yolov4-obj_last.weights> -ext_output <LPR/testingLP/testLokalisasi.jpg> -dont_show -out <predictResult.txt>
@@ -80,12 +91,54 @@ async def get_bounding_box(img_id):
             session.close()
 
     # return db bounding box id
-    return {"bounding_box_id": bounding_box_id}
+    return {"img_id": img_id}
 
 # extract plates from img_input
-@router.post("/get-cropped-img/{bounding_box_id}")
-async def get_cropped_img(bounding_box_id):
-    return {"response":"200 OK"}
+@router.post("/get-cropped-img/{img_id}")
+async def get_cropped_img(img_id):
+    queryImg = select(db.ImgInput).where(db.ImgInput.id == img_id)
+    queryBBox = select(db.BoundingBox).where(db.BoundingBox.img_input_id == img_id)
+    queryHistory = select(db.History).where(db.History.img_input_id == img_id)
+    
+    with Session(db.engine) as session:
+        # get ImgInput path
+        result = session.execute(queryImg).fetchone()[0]
+        resultBBox = session.execute(queryBBox).fetchall()
+        img_path = result.img_path
+        img_index = 0
+        # cropping all bbox predicted from the ImgInput
+        for row in resultBBox:
+            cropped_img_path = crop_img.get_cropped_img(
+                img_path, 
+                row.BoundingBox.center_x,
+                row.BoundingBox.center_y,
+                row.BoundingBox.width,
+                row.BoundingBox.height,
+                img_index
+                )
+            img_index += 1
+            
+            # saving each cropped img to CroppedImg db
+            cropped_img_obj = db.CroppedImg(img_path = cropped_img_path)
+            session.add(cropped_img_obj)
+            session.commit()
+            cropped_img_id = cropped_img_obj.id
+            
+            # get History id of current ImgInput
+            result = session.execute(queryHistory).fetchone()[0]
+            history_id = result.id
+            
+            # save history id and cropped img id to CroppedAndSuper tbl
+            cropped_super_obj = db.CroppedAndSuper(
+                history_id = history_id,
+                cropped_img_id = cropped_img_id
+                )
+            session.add(cropped_super_obj)
+            session.commit()
+                
+    session.close()
+    
+    return {"historyId" : history_id}
 
 @router.get("/get-history/all")
 async def read_all_history():
@@ -97,7 +150,7 @@ async def specific_history(inference_id: int):
 
 @router.get('/get-image')
 def get_all_image_path():
-    query = select(tables.tbl_img_input)
+    query = select(db.ImgInput)
     results = db.engine.execute(query).fetchall()
     payload = []
     for row in results:
@@ -106,7 +159,7 @@ def get_all_image_path():
 
 @router.get('/get-one-image/{image_id}')
 def get_image(image_id):
-    query = select(tables.tbl_img_input).where(tables.tbl_img_input.c.id==image_id)
+    query = select(db.ImgInput).where(db.ImgInput.id == image_id)
     result = db.engine.execute(query).fetchone()
 
     if not result:
@@ -119,7 +172,7 @@ def get_image(image_id):
 @router.get('/get-multiple-image/{image_ids}')
 def get_zip_image(image_ids):    
     ids = tuple(map(int, image_ids.split(",")))
-    query = select(tables.tbl_img_input).filter(tables.tbl_img_input.c.id.in_(ids))
+    query = select(db.ImgInput).filter(db.ImgInput.id.in_(ids))
     results = db.engine.execute(query).fetchall()
 
     if not results:

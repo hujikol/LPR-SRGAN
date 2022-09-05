@@ -1,6 +1,6 @@
 import cv2
-import preprocess
-import variables
+
+from utils import preprocess, variables
 
 def yoloLine2Shape(imgHeight, imgWidth, xcen, ycen, w, h):
     xmin = float(xcen) - float(w) / 2
@@ -16,7 +16,7 @@ def yoloLine2Shape(imgHeight, imgWidth, xcen, ycen, w, h):
 
     return xmin, ymin, xmax, ymax
 
-def get_cropped_img(origin_img_path, x_relative, y_relative, w_relative, h_relative):
+def get_cropped_img(origin_img_path, x_relative, y_relative, w_relative, h_relative, img_index):
     img = cv2.imread(origin_img_path)
 
     # get image size
@@ -26,6 +26,6 @@ def get_cropped_img(origin_img_path, x_relative, y_relative, w_relative, h_relat
     xmin, ymin, xmax, ymax = yoloLine2Shape(imgHeight, imgWidth, x_relative, y_relative, w_relative, h_relative)
     
     crop_img = img[ymin:ymax,xmin:xmax]
-    cropped_img_path = preprocess.save_img(variables.CROP_IMG_PATH, "cropped", crop_img)
+    cropped_img_path = preprocess.save_img(variables.CROP_IMG_PATH, "cropped", crop_img, img_index)
     
     return cropped_img_path
