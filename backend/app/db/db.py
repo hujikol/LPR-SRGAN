@@ -74,5 +74,7 @@ class CroppedAndSuper(Base):
     
     cropped_text = Column(String(255))
     super_text = Column(String(255))
+    cropped_wo_text = Column(String(255))
+    super_wo_text = Column(String(255))
     
 Base.metadata.create_all(engine)

@@ -10,7 +10,7 @@ from io import BytesIO
 from fastapi import APIRouter, File, UploadFile, HTTPException, responses
 from sqlalchemy import select, update
 from db import db
-from utils import variables, super_img, bounding_box, crop_img
+from utils import variables, super_img, bounding_box, crop_img, img_ocr
 
 router = APIRouter()
 
@@ -142,10 +142,11 @@ async def get_cropped_img(img_id):
 
 @router.post("/super-img/{history_id}")
 async def get_super_resolution_img(history_id):
+    # get all CroppedAndSuper id for current history id
     queryCnS = select(db.CroppedAndSuper).where(db.CroppedAndSuper.history_id == history_id)
     
     with Session(db.engine) as session:
-        # get cropped img
+        #  get all CroppedAndSuper data for current history id
         resultCnS = session.execute(queryCnS).fetchall()
 
         img_index = 0
@@ -153,7 +154,10 @@ async def get_super_resolution_img(history_id):
         for row in resultCnS:
             
             # get cropped img path
-            queryCropImg = select(db.CroppedImg).where(db.CroppedImg.id == row.CroppedAndSuper.cropped_img_id)
+            queryCropImg = (
+                select(db.CroppedImg)
+                .where(db.CroppedImg.id == row.CroppedAndSuper.cropped_img_id)
+                )
             cropImg = session.execute(queryCropImg).fetchone()
             croppedImg_path = cropImg[0].img_path
             
@@ -168,12 +172,65 @@ async def get_super_resolution_img(history_id):
             super_img_id = super_img_obj.id
             
             # save super img id to CroppedAndSuper tbl based on CroppedAndSuper id
-            updateCnS = update(db.CroppedAndSuper).where(db.CroppedAndSuper.id == row.CroppedAndSuper.id).values(super_img_id = super_img_id)
+            updateCnS = (
+                update(db.CroppedAndSuper)
+                .where(db.CroppedAndSuper.id == row.CroppedAndSuper.id)
+                .values(super_img_id = super_img_id)
+                )
             session.execute(updateCnS)
             session.commit()
                 
     session.close()
     return {"historyId" : history_id}
+
+@router.post("/easy-ocr/{history_id}")
+async def get_img_character(history_id):
+    # get all CroppedAndSuper data for current history id
+    queryCnS = select(db.CroppedAndSuper).where(db.CroppedAndSuper.history_id == history_id)
+
+    with Session(db.engine) as session:
+    # get all CroppedAndSuper data for current history id
+        resultCnS = session.execute(queryCnS).fetchall()
+        
+        img_index = 0
+        # for all cropped and super img create super resolution img
+        for row in resultCnS:
+            # get cropped img path
+            queryCropImg = (
+                select(db.CroppedImg)
+                .where(db.CroppedImg.id == row.CroppedAndSuper.cropped_img_id))
+            cropImg = session.execute(queryCropImg).fetchone()
+            croppedImg_path = cropImg[0].img_path
+            
+            # extracting character from cropped img
+            croppedImg_char, croppedImg_wo_char = img_ocr.get_image_character(croppedImg_path)
+            
+            # get super resolution img path
+            querySuperImg = (
+                select(db.SuperImg)
+                .where(db.SuperImg.id == row.CroppedAndSuper.super_img_id))
+            superImg = session.execute(querySuperImg).fetchone()
+            superImg_path = superImg[0].img_path
+            
+            # extracting character from super img
+            superImg_char, superImg_wo_char = img_ocr.get_image_character(superImg_path)
+            
+            # saving into CroppedAndSuper
+            updateCnS = (
+                update(db.CroppedAndSuper)
+                .where(db.CroppedAndSuper.id == row.CroppedAndSuper.id)
+                .values(
+                    cropped_text = croppedImg_char,
+                    cropped_wo_text = croppedImg_wo_char,
+                    super_text = superImg_char,
+                    super_wo_text = superImg_wo_char
+                    )
+                )
+            session.execute(updateCnS)
+            session.commit()
+            
+        session.close()    
+    return {"historyId": history_id}
 
 @router.get("/get-history/all")
 async def read_all_history():
