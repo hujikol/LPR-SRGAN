@@ -1,9 +1,11 @@
-from unittest import async_case, result
 import aiofiles
 import zipfile 
 import subprocess
 import os
+import shutil
+import base64
 
+from unittest import async_case, result
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 from io import BytesIO
@@ -56,6 +58,7 @@ async def upload_img(file: UploadFile = File(...)):
 async def get_bounding_box(img_id):
     query = select(db.ImgInput).where(db.ImgInput.id == img_id)
     with Session(db.engine) as session:
+        # get img input path
         result = session.execute(query).fetchone()[0]
         img_path = result.img_path
         
@@ -67,6 +70,9 @@ async def get_bounding_box(img_id):
     # !./darknet detector test <LPR/obj.data> <LPR/darknet/yolov4-obj.cfg> <LPR/detectionBKP/yolov4-obj_last.weights> -ext_output <LPR/testingLP/testLokalisasi.jpg> -dont_show -out <predictResult.txt>
     subprocess.run(["darknet", "detector", "test", variables.OBJ_DATA_PATH, variables.CFG_PATH, variables.YOLO_WEIGHT_PATH, "-ext_output", img_path, "-dont_show", "-out", variables.TXT_RESULT_PATH])
 
+    # copy img prediction w/ bbox into highres-image folder
+    shutil.copy(variables.IMG_RESULT_PATH, img_path.replace(".", "_wbbox."))
+    
     # call utils get bounding-box coordinate
     bounding_data = bounding_box.getBoundingBox(variables.TXT_RESULT_PATH)
     bounding_box_id = []
@@ -192,7 +198,6 @@ async def get_img_character(history_id):
     # get all CroppedAndSuper data for current history id
         resultCnS = session.execute(queryCnS).fetchall()
         
-        img_index = 0
         # for all cropped and super img create super resolution img
         for row in resultCnS:
             # get cropped img path
@@ -236,10 +241,82 @@ async def get_img_character(history_id):
 async def read_all_history():
     return {"history_id": ['id_list_and_data']}
 
-@router.get("/get-history/{inference_id}")
-async def specific_history(inference_id: int):
-    return {"history_id": inference_id}
+@router.post("/get-history/{history_id}")
+async def specific_history(history_id):
+    cns_data = []
+    
+    # select img input path
+    queryImgId = select(db.History.img_input_id).where(db.History.id == history_id)
+    # select cropped img and super img path where id history
+    queryCnS = select(db.CroppedAndSuper).where(db.CroppedAndSuper.history_id == history_id)
+    with Session(db.engine) as session:
+        # get img input id
+        img_id = session.execute(queryImgId).fetchone()
+        
+        # get yolo avg confidence from all bbox in image
+        queryYoloConf = select(db.BoundingBox.yolo_confidence).where(db.BoundingBox.img_input_id == img_id[0])
+        yoloConf = session.execute(queryYoloConf).fetchall()
+        yoloConf = [item for item, in yoloConf]
+        avgYoloConf = sum(yoloConf) / len(yoloConf)
+        
+        # get img input in byte64
+        queryImgPath = select(db.ImgInput.img_path).where(db.ImgInput.id == img_id[0])
+        img_path = session.execute(queryImgPath).fetchone()
+        with open(img_path[0].replace(".", "_wbbox."), 'rb') as f:
+            yolo_img_byte = base64.b64encode(f.read())
+        
+        # get all Cropped and Super resolution image and text from one image input
+        resultCnS = session.execute(queryCnS).fetchall()
+        for row in resultCnS:
+            # get cropped img byte64 data
+            queryCropImg = (
+                select(db.CroppedImg)
+                .where(db.CroppedImg.id == row.CroppedAndSuper.cropped_img_id))
+            cropImg = session.execute(queryCropImg).fetchone()
+            croppedImg_path = cropImg[0].img_path
+            with open(croppedImg_path, 'rb') as f:
+                cropped_img_byte = base64.b64encode(f.read())
+            
+            # get cropped img size in KB
+            crop_img_size = os.stat(croppedImg_path).st_size / 1024
+            
+            # get super resolution img byte64 data
+            querySuperImg = (
+                select(db.SuperImg)
+                .where(db.SuperImg.id == row.CroppedAndSuper.super_img_id))
+            superImg = session.execute(querySuperImg).fetchone()
+            superImg_path = superImg[0].img_path
+            with open(superImg_path, 'rb') as f:
+                super_img_byte = base64.b64encode(f.read())
 
+            # get super img size in KB
+            super_img_size = os.stat(superImg_path).st_size / 1024
+            
+            # get character
+            crop_text = row.CroppedAndSuper.cropped_text
+            crop_wo_text = row.CroppedAndSuper.cropped_wo_text
+            super_text = row.CroppedAndSuper.super_text
+            super_wo_text = row.CroppedAndSuper.super_wo_text
+            
+            # append to cns data
+            cns_data.append({
+                "crop_img_byte":cropped_img_byte,
+                "crop_img_size": crop_img_size,
+                "crop_text":crop_text,
+                "crop_wo_text": crop_wo_text,
+                "super_img_byte": super_img_byte,
+                "super_img_size": super_img_size,
+                "super_text": super_text,
+                "super_wo_text": super_wo_text,
+            })
+            
+    # return cropped + super img + text, (w&wo otsu), get yolo confidence
+    return {
+        "yolo_confidence": avgYoloConf,
+        "yolo_img_byte": yolo_img_byte,
+        "cns_data": cns_data,
+    }
+            
 @router.get('/get-image')
 def get_all_image_path():
     query = select(db.ImgInput)

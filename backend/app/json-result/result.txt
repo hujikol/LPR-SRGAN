@@ -1,7 +1,7 @@
 [
 {
  "frame_id":1, 
- "filename":"/home/app/app/image-dataset/highres-img/img_input_05-09-2022 12:33:46.jpg", 
+ "filename":"/home/app/app/image-dataset/highres-img/img_input_06-09-2022 11:53:26.jpg", 
  "objects": [ 
   {"class_id":0, "name":"license_plate", "relative_coordinates":{"center_x":0.702381, "center_y":0.494441, "width":0.077021, "height":0.043147}, "confidence":0.987474}, 
   {"class_id":0, "name":"license_plate", "relative_coordinates":{"center_x":0.318970, "center_y":0.585535, "width":0.079129, "height":0.054197}, "confidence":0.987217}
