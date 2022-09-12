@@ -30,7 +30,7 @@ async def upload_img(file: UploadFile = File(...)):
 
     output_file = "{}/img_input_{}.jpg".format(variables.INPUT_IMG_PATH, timeNow)
     
-    async with aiofiles.open(output_file, 'wb') as out_file:
+    async with aiofiles.open(output_file, 'wb+') as out_file:
         img_input_obj = db.ImgInput(img_path = output_file)
         with Session(db.engine) as session:
             # saving into ImgInput db
@@ -240,7 +240,40 @@ async def get_img_character(history_id):
 
 @router.get("/get-history/all")
 async def read_all_history():
-    return {"history_id": ['id_list_and_data']}
+    queryHistory = select(db.History)
+    historyData = []
+    with Session(db.engine) as session:
+        resultHistory = session.execute(queryHistory).fetchall()
+        
+        for row in resultHistory:
+            # get img input in byte64
+            queryImgId = select(db.History.img_input_id).where(db.History.id == row.History.img_input_id)
+            img_id = session.execute(queryImgId).fetchone()
+            
+            queryImgPath = (
+                select(db.ImgInput.img_path)
+                .where(db.ImgInput.id == img_id[0]))
+            img_path = session.execute(queryImgPath).fetchone()
+            img_path = img_path[0].replace(".", "_wbbox.")
+            with open(img_path, 'rb') as f:
+                inputImg_byte = base64.b64encode(f.read())
+            
+            # counting detected plates
+            queryBBCount = (select(db.BoundingBox).where(db.BoundingBox.img_input_id == img_id[0]))
+            resultBBCount = session.execute(queryBBCount).fetchall()
+            bboxCount = len(resultBBCount)
+            
+            # get infference date time
+            dateTime = row.History.date_time.strftime("%d-%m-%Y %H:%M:%S")
+                                      
+            historyData.append({
+                "historyId" : row.History.id,
+                "inputImg_byte" : inputImg_byte,
+                "dateTime" : dateTime,
+                "bboxCount" : bboxCount,
+            })
+            
+    return {"historyData": historyData}
 
 @router.post("/get-history/{history_id}")
 async def specific_history(history_id):
@@ -263,7 +296,8 @@ async def specific_history(history_id):
         # get img input in byte64
         queryImgPath = select(db.ImgInput.img_path).where(db.ImgInput.id == img_id[0])
         img_path = session.execute(queryImgPath).fetchone()
-        with open(img_path[0].replace(".", "_wbbox."), 'rb') as f:
+        img_path = img_path[0].replace(".", "_wbbox.")
+        with open(img_path, 'rb') as f:
             yolo_img_byte = base64.b64encode(f.read())
         
         # get all Cropped and Super resolution image and text from one image input

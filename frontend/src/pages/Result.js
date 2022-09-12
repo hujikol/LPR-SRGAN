@@ -41,7 +41,7 @@ function Result() {
         <div className='max-w-2xl mx-auto mt-2 rounded-md'>
           <img
             className='rounded-t-lg'
-            src={`data:image/jpeg;base64,${JSON.stringify(
+            src={`data:image/jpg;charset=utf-8;base64,${JSON.stringify(
               jsonResponse.yolo_img_byte
             )}`}
             alt=''
