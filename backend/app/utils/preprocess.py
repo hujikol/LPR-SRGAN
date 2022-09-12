@@ -9,7 +9,7 @@ def open_img(img_path):
     return img
 
 def save_img(folder_path, img_type, img, index = 0):
-    time = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    time = datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")
     
     # ex img_path = '/image-dataset/highres-img/img_highres_02-09-2022 09:43:07'
     img_path = "{}/img_{}_{}_{}.jpg".format(folder_path, img_type, index, time)

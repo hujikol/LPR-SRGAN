@@ -75,7 +75,11 @@ async def get_bounding_box(img_id):
     
     # call utils get bounding-box coordinate
     bounding_data = bounding_box.getBoundingBox(variables.TXT_RESULT_PATH)
-    bounding_box_id = []
+    
+    # if no bounding data were found, retunring -1 for error
+    if len(bounding_data) == 0:
+        return {"img_id":-1}
+    
     # save bounding box data for every object in image
     for obj_count in range(len(bounding_data)):
         # save collected bounding box to DB
@@ -90,10 +94,7 @@ async def get_bounding_box(img_id):
         
         with Session(db.engine) as session:
             session.add(bounding_box_data)
-            session.commit()
-            
-            bounding_box_id.append(bounding_box_data.id)
-            
+            session.commit()        
             session.close()
 
     # return db bounding box id
