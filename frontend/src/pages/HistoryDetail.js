@@ -6,6 +6,7 @@ import ScaleLoader from "react-spinners/ScaleLoader";
 function HistoryDetail() {
   const { postSlug } = useParams();
   const [historyData, setHistoryData] = useState([]);
+  let counter = 1;
 
   const client = axios.create({
     baseURL: "http://localhost:8000",
@@ -62,83 +63,115 @@ function HistoryDetail() {
             <b>{(historyData.yolo_confidence * 100).toFixed(2)}%</b>
           </span>
         </div>
-
-        {historyData.cns_data?.map((data) => {
-          return (
-            <div className='flex flex-row justify-between mx-auto mt-12'>
-              <div>
-                {/*Cropped Card Start */}
-                <div className='max-w-xs mr-12 bg-white rounded-lg border border-gray-200 shadow-md'>
-                  <div className='max-h-42 overflow-hidden'>
-                    <img
-                      className='object-contain h-42 w-full rounded-t-lg'
-                      // change Image here
-                      src={`data:image/jpeg;base64,${data.crop_img_byte}`}
-                      alt=''
-                    />
+        <div className='flex flex-col divide-y-2 divide-black-500'>
+          {historyData.cns_data?.map((data) => {
+            return (
+              <div className='flex flex-col mt-12 pt-12'>
+                {historyData.cns_data.length > 1 && (
+                  <h2 className='text-xl text-center font-bold text-gray-700 mb-6'>
+                    Plat Nomor Ke - {counter++}
+                  </h2>
+                )}
+                <div className='flex flex-row justify-between mx-auto'>
+                  <div>
+                    {/*Cropped Card Start */}
+                    <div className='max-w-xs mr-12 bg-white rounded-lg border border-gray-200 shadow-md'>
+                      <div className='max-h-42 overflow-hidden'>
+                        <img
+                          className='object-contain h-42 w-full rounded-t-lg'
+                          // change Image here
+                          src={`data:image/jpeg;base64,${data.crop_img_byte}`}
+                          alt=''
+                        />
+                      </div>
+                      <div className='p-5'>
+                        <h3 className='mb-2 text-xl font-bold tracking-tight text-gray-700'>
+                          Hasil <em>Cropping</em> Plat Nomor
+                        </h3>
+                        <p className='mb-3 text-gray-700'>
+                          <b>Karakter Terdeteksi Tanpa Otsu's</b>
+                          <br />
+                          {data.crop_wo_text !== "" ? (
+                            data.crop_wo_text
+                          ) : (
+                            <span className='font-normal text-red-500'>
+                              EasyOcr tidak dapat mengenali karakter.
+                            </span>
+                          )}
+                        </p>
+                        <p className='mb-3 text-gray-700'>
+                          <b>Karakter Terdeteksi dg Otsu's</b>
+                          <br />
+                          {data.crop_text !== "" ? (
+                            data.crop_text
+                          ) : (
+                            <span className='font-normal text-red-500'>
+                              EasyOcr tidak dapat mengenali karakter.
+                            </span>
+                          )}
+                        </p>
+                        <p className='mb-3 text-gray-700'>
+                          <b>Ukuran File</b>
+                          <br />
+                          {parseFloat(data.crop_img_size).toFixed(2)} KB
+                        </p>
+                      </div>
+                    </div>
+                    {/* Cropped Ends */}
                   </div>
-                  <div className='p-5'>
-                    <h3 className='mb-2 text-xl font-bold tracking-tight text-gray-700'>
-                      Hasil <em>Cropping</em> Plat Nomor
-                    </h3>
-                    <p className='mb-3 text-gray-700'>
-                      <b>Karakter Terdeteksi Tanpa Otsu's</b>
-                      <br />
-                      {data.crop_wo_text}
-                    </p>
-                    <p className='mb-3 text-gray-700'>
-                      <b>Karakter Terdeteksi dg Otsu's</b>
-                      <br />
-                      {data.crop_text}
-                    </p>
-                    <p className='mb-3 text-gray-700'>
-                      <b>Ukuran File</b>
-                      <br />
-                      {parseFloat(data.crop_img_size).toFixed(2)} KB
-                    </p>
+                  <div>
+                    {/*SRGAN Card Start */}
+                    <div className='max-w-xs bg-white rounded-lg border border-gray-200 shadow-md'>
+                      <div className='max-h-52 overflow-hidden'>
+                        <img
+                          className='w-full rounded-t-lg'
+                          // change Image here
+                          src={`data:image/jpeg;base64,${data.super_img_byte}`}
+                          alt=''
+                        />
+                      </div>
+
+                      <div className='p-5'>
+                        <h3 className='mb-2 text-xl font-bold tracking-tight text-gray-700'>
+                          Hasil <em>Super-Resolution</em>
+                        </h3>
+
+                        <p className='mb-3 text-gray-700'>
+                          <b>Karakter Terdeteksi Tanpa Otsu's</b>
+                          <br />
+                          {data.super_wo_text !== "" ? (
+                            data.super_wo_text
+                          ) : (
+                            <span className='font-normal text-red-500'>
+                              EasyOcr tidak dapat mengenali karakter.
+                            </span>
+                          )}
+                        </p>
+                        <p className='mb-3 text-gray-700'>
+                          <b>Karakter Terdeteksi dg Otsu's</b>
+                          <br />
+                          {data.super_text !== "" ? (
+                            data.super_text
+                          ) : (
+                            <span className='font-normal text-red-500'>
+                              EasyOcr tidak dapat mengenali karakter.
+                            </span>
+                          )}
+                        </p>
+                        <p className='mb-3 text-gray-700'>
+                          <b>Ukuran File</b>
+                          <br />
+                          {parseFloat(data.super_img_size).toFixed(2)} KB
+                        </p>
+                      </div>
+                    </div>
+                    {/* SRGAN Ends */}
                   </div>
                 </div>
-                {/* Cropped Ends */}
               </div>
-              <div>
-                {/*SRGAN Card Start */}
-                <div className='max-w-xs bg-white rounded-lg border border-gray-200 shadow-md'>
-                  <div className='max-h-52 overflow-hidden'>
-                    <img
-                      className='w-full rounded-t-lg'
-                      // change Image here
-                      src={`data:image/jpeg;base64,${data.super_img_byte}`}
-                      alt=''
-                    />
-                  </div>
-
-                  <div className='p-5'>
-                    <h3 className='mb-2 text-xl font-bold tracking-tight text-gray-700'>
-                      Hasil <em>Super-Resolution</em>
-                    </h3>
-
-                    <p className='mb-3 text-gray-700'>
-                      <b>Karakter Terdeteksi Tanpa Otsu's</b>
-                      <br />
-                      {data.super_wo_text}
-                    </p>
-                    <p className='mb-3 text-gray-700'>
-                      <b>Karakter Terdeteksi dg Otsu's</b>
-                      <br />
-                      {data.super_text}
-                    </p>
-                    <p className='mb-3 text-gray-700'>
-                      <b>Ukuran File</b>
-                      <br />
-                      {parseFloat(data.super_img_size).toFixed(2)} KB
-                    </p>
-                  </div>
-                </div>
-                {/* SRGAN Ends */}
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
