@@ -41,9 +41,7 @@ function Result() {
         <div className='max-w-2xl mx-auto mt-2 rounded-md'>
           <img
             className='rounded-t-lg'
-            src={`data:image/jpg;charset=utf-8;base64,${JSON.stringify(
-              jsonResponse.yolo_img_byte
-            )}`}
+            src={`data:image/jpg;charset=utf-8;base64,${jsonResponse.yolo_img_byte}`}
             alt=''
           />
         </div>
@@ -66,7 +64,7 @@ function Result() {
                 <div className='max-w-xs mr-12 bg-white rounded-lg border border-gray-200 shadow-md'>
                   <div className='max-h-42 overflow-hidden'>
                     <img
-                      className='rounded-t-lg'
+                      className='object-contain h-42 w-full rounded-t-lg'
                       // change Image here
                       src={`data:image/jpeg;base64,${resultCns.crop_img_byte}`}
                       alt=''
@@ -100,7 +98,7 @@ function Result() {
                 <div className='max-w-xs bg-white rounded-lg border border-gray-200 shadow-md'>
                   <div className='max-h-42 overflow-hidden'>
                     <img
-                      className='rounded-t-lg'
+                      className=' w-full rounded-t-lg'
                       // change Image here
                       src={`data:image/jpeg;base64,${resultCns.super_img_byte}`}
                       alt=''

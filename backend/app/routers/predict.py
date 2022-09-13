@@ -272,7 +272,8 @@ async def read_all_history():
                 "dateTime" : dateTime,
                 "bboxCount" : bboxCount,
             })
-            
+    if len(historyData) == 0:
+        return {"historyData" : 0}
     return {"historyData": historyData}
 
 @router.post("/get-history/{history_id}")
@@ -335,21 +336,21 @@ async def specific_history(history_id):
             
             # append to cns data
             cns_data.append({
-                "crop_img_byte":cropped_img_byte,
-                "crop_img_size": crop_img_size,
-                "crop_text":crop_text,
-                "crop_wo_text": crop_wo_text,
-                "super_img_byte": super_img_byte,
-                "super_img_size": super_img_size,
-                "super_text": super_text,
-                "super_wo_text": super_wo_text,
+                "crop_img_byte" : cropped_img_byte,
+                "crop_img_size" : crop_img_size,
+                "crop_text" : crop_text,
+                "crop_wo_text" : crop_wo_text,
+                "super_img_byte" : super_img_byte,
+                "super_img_size" : super_img_size,
+                "super_text" : super_text,
+                "super_wo_text" : super_wo_text,
             })
             
     # return cropped + super img + text, (w&wo otsu), get yolo confidence
     return {
-        "yolo_confidence": avgYoloConf,
-        "yolo_img_byte": yolo_img_byte,
-        "cns_data": cns_data,
+        "yolo_confidence" : avgYoloConf,
+        "yolo_img_byte" : yolo_img_byte,
+        "cns_data" : cns_data,
     }
             
 @router.get('/get-image')
