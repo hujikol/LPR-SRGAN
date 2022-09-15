@@ -16,7 +16,7 @@ from utils import variables, super_img, bounding_box, crop_img, img_ocr
 
 router = APIRouter()
 
-timeNow = datetime.now().replace(tzinfo=timezone.utc).strftime("%d-%m-%Y %H:%M:%S")
+timeNow = datetime.now().replace(tzinfo=timezone.utc).strftime("%d-%m-%Y %H:%M:%S:%f")
 
 
 @router.get("/")
@@ -28,30 +28,36 @@ async def upload_img(file: UploadFile = File(...)):
     if file.content_type != "image/jpeg":
         raise HTTPException(status_code=415, detail="Only support .jpg or .jpeg file")
 
-    output_file = "{}/img_input_{}.jpg".format(variables.INPUT_IMG_PATH, timeNow)
-    
-    async with aiofiles.open(output_file, 'wb+') as out_file:
-        img_input_obj = db.ImgInput(img_path = output_file)
+    base_file_name = "img_input_{}.jpg".format(timeNow)
+    output_file = "{}/{}".format(variables.INPUT_IMG_PATH, base_file_name)
+    try :
+        async with aiofiles.open(output_file, 'xb+') as out_file:
+            img_input_obj = db.ImgInput(img_path = output_file)
+            with Session(db.engine) as session:
+                # saving into ImgInput db
+                session.add(img_input_obj)
+                session.commit()
+                
+                img_id = img_input_obj.id
+                
+                # saving into History db
+                history_obj = db.History(img_input_id = img_id)
+                session.add(history_obj)
+                session.commit()
+                
+                img_id = history_obj.img_input_id
+                
+                session.close()
+
+            content = await file.read()
+            await out_file.write(content)
+    except FileExistsError as err:
+        img_id_query = select(db.ImgInput).where(db.ImgInput.img_path == err.filename)
         with Session(db.engine) as session:
-            # saving into ImgInput db
-            session.add(img_input_obj)
-            session.commit()
-            
-            img_id = img_input_obj.id
-            
-            # saving into History db
-            history_obj = db.History(img_input_id = img_id)
-            session.add(history_obj)
-            session.commit()
-            
-            img_id = history_obj.img_input_id
-            
-            session.close()
-
-        content = await file.read()
-        await out_file.write(content)
-
-    return {"id": img_id}
+            img_id = session.execute(img_id_query).fetchone()[0].id
+        return {"id":img_id, "Error":"File is exist"}
+    else:
+        return {"id": img_id}
 
 # get img bounding-box and save to db BoundingBox
 @router.post("/get-bounding-box/{img_id}")
