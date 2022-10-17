@@ -183,8 +183,10 @@ image-dataset/test-folder/*.jpg
 image-dataset/test-folder/*.jpeg
 
 json_result/*.json
+json_result/*.txt
 
 darknet/
 
 app/model/*.weights
+app/model/*.h5
 app/*.list

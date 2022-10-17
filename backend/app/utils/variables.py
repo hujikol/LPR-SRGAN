@@ -8,7 +8,7 @@ SUPER_IMG_PATH = "{}/image-dataset/super-result".format(WORKSPACE)
 
 OBJ_DATA_PATH = "{}/model/obj.data".format(WORKSPACE)
 CFG_PATH = "{}/model/yolov4-obj.cfg".format(WORKSPACE)
-YOLO_WEIGHT_PATH = "{}/model/yolov4-obj_last.weights".format(WORKSPACE)
+YOLO_WEIGHT_PATH = "{}/model/yolov4-obj_best.weights".format(WORKSPACE)
 
 MODEL_SRGAN_PATH = "{}/model/gen_SRGAN_60.h5".format(WORKSPACE)
 TXT_RESULT_PATH = "{}/json-result/result.txt".format(WORKSPACE)

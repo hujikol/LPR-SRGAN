@@ -186,4 +186,5 @@ json_result/*.txt
 
 darknet/
 model/*.weights
+model/*.h5
 *.jpg
