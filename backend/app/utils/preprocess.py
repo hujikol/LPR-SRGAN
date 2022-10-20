@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import datetime
+from PIL import Image
 
 def open_img(img_path):
     img = cv2.imread(img_path)
@@ -8,13 +9,23 @@ def open_img(img_path):
     
     return img
 
-def save_img(folder_path, img_type, img, index = 0):
+def load_img(img_path):
+    img = Image.open(img_path)
+    img = img.resize([64,32])
+    img = np.array(img)
+    return np.expand_dims(img, axis=0)
+
+def save_img(folder_path, img_type, img, index = 0, pil=False):
     time = datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S:%f")
     
     # ex img_path = '/image-dataset/highres-img/img_highres_02-09-2022 09:43:07'
     img_path = "{}/img_{}_{}_{}.jpg".format(folder_path, img_type, index, time)
 
-    cv2.imwrite(img_path, img)
+    if pil:
+        img = Image.fromarray(img.numpy())
+        img.save(img_path)
+    else:
+        cv2.imwrite(img_path, img)
     
     return img_path
 
@@ -25,10 +36,20 @@ def normalize_img(img):
     
     return img_arr
 
+def normalize_img01(img_arr):
+    return img_arr / 255.0
+    
+# normalize RGB images to [-1,1]
+def normalize_img11(img_arr):
+    return img_arr / 127.5
+
 def denormalize_img(img_arr):
     img = img_arr * 255.
     
     return img[0,:,:,:]
+
+def denormalize_img11(img_arr):
+    return (img_arr + 1) * 127.5
 
 def resize_img(img):
     img = cv2.resize(img,(64,32))

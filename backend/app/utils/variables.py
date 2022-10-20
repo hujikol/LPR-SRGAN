@@ -10,7 +10,8 @@ OBJ_DATA_PATH = "{}/model/obj.data".format(WORKSPACE)
 CFG_PATH = "{}/model/yolov4-obj.cfg".format(WORKSPACE)
 YOLO_WEIGHT_PATH = "{}/model/yolov4-obj_best.weights".format(WORKSPACE)
 
-MODEL_SRGAN_PATH = "{}/model/gen_SRGAN_60.h5".format(WORKSPACE)
+MODEL_SRGAN_PATH = "{}/model/oldGenerator_100.h5".format(WORKSPACE)
+SRGAN_WEIGHTS_PATH = "{}/model/SRGAN_weights.h5".format(WORKSPACE)
 TXT_RESULT_PATH = "{}/json-result/result.txt".format(WORKSPACE)
 IMG_RESULT_PATH ="{}/predictions.jpg".format(WORKSPACE)
 

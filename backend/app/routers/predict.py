@@ -12,7 +12,7 @@ from io import BytesIO
 from fastapi import APIRouter, File, UploadFile, HTTPException, responses
 from sqlalchemy import select, update
 from db import db
-from utils import variables, super_img, bounding_box, crop_img, img_ocr
+from utils import variables, super_img, new_super_img, bounding_box, crop_img, img_ocr
 
 router = APIRouter()
 
@@ -147,6 +147,7 @@ async def get_cropped_img(img_id):
     
     return {"historyId" : history_id}
 
+# Generating Super Images
 @router.post("/super-img/{history_id}")
 async def get_super_resolution_img(history_id):
     # get all CroppedAndSuper id for current history id
@@ -169,7 +170,9 @@ async def get_super_resolution_img(history_id):
             croppedImg_path = cropImg[0].img_path
             
             # get super resolution img path
-            super_img_path = super_img.get_super_img(croppedImg_path, img_index)
+            # super_img_path = super_img.get_super_img(croppedImg_path, img_index)
+            super_img_path = new_super_img.get_super_img(croppedImg_path, img_index)
+            
             img_index += 1
             
             # saving each super img to SuperImg db
@@ -352,4 +355,3 @@ async def specific_history(history_id):
         "yolo_img_byte" : yolo_img_byte,
         "cns_data" : cns_data,
     }
-

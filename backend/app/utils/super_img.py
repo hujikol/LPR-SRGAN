@@ -7,7 +7,7 @@ def get_super_img(img_path, img_index):
     # pre process img
     img = preprocess.open_img(img_path)
     img = preprocess.resize_img(img)
-    img_arr = preprocess.normalize_img(img)
+    img_arr = preprocess.normalize_img(img, old=True)
     
     super_img = generator.predict(img_arr)
     
