@@ -11,7 +11,8 @@ def open_img(img_path):
 
 def load_img(img_path):
     img = Image.open(img_path)
-    img = img.resize([64,32])
+    if max(img.size) > 512:
+        img.thumbnail((512,512), Image.ANTIALIAS)
     img = np.array(img)
     return np.expand_dims(img, axis=0)
 

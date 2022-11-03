@@ -437,7 +437,11 @@ async def delete_specific_history(history_id):
             if imgInputPath != None:
                 if os.path.exists(imgInputPath):
                     os.remove(imgInputPath)
-                
+                    
+                # delete img with bbox
+                if os.path.exists(imgInputPath.replace(".", "_wbbox.")):
+                    os.remove(imgInputPath.replace(".", "_wbbox."))
+            
             # delete history
             if session.execute(select(db.History).where(db.History.id == hId)).one_or_none() != None:
                 delHistory = delete(db.History).where(db.History.id == hId)
