@@ -1,7 +1,7 @@
 import easyocr
-from utils import preprocess
+from utils import preprocess, variables
 
-reader = easyocr.Reader(['en'], gpu = False)
+reader = easyocr.Reader(['en'], gpu = False, download_enabled = False, model_storage_directory = variables.EASYOCR_MODEL_PATH)
 
 def get_image_character(img_path, detail = 0):
     

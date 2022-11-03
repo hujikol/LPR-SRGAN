@@ -15,5 +15,7 @@ SRGAN_WEIGHTS_PATH = "{}/model/SRGAN_weights.h5".format(WORKSPACE)
 TXT_RESULT_PATH = "{}/json-result/result.txt".format(WORKSPACE)
 IMG_RESULT_PATH ="{}/predictions.jpg".format(WORKSPACE)
 
+EASYOCR_MODEL_PATH = "{}/model/".format(WORKSPACE)
+
 MODEL_PATH = "{}/model".format(WORKSPACE)
 JSON_RESULT_PATH = "{}/json-result".format(WORKSPACE)

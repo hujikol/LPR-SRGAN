@@ -1,5 +1,4 @@
 import aiofiles
-import zipfile 
 import subprocess
 import os
 import shutil
@@ -10,7 +9,7 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 from io import BytesIO
 from fastapi import APIRouter, File, UploadFile, HTTPException, responses
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 from db import db
 from utils import variables, super_img, new_super_img, bounding_box, crop_img, img_ocr
 
@@ -50,7 +49,8 @@ async def upload_img(file: UploadFile = File(...)):
         content = await file.read()
         await out_file.write(content)
         out_file.close()
-
+        
+    session.close()
     return {"id": img_id}
 
 # get img bounding-box and save to db BoundingBox
@@ -275,6 +275,8 @@ async def read_all_history():
                 "dateTime" : dateTime,
                 "bboxCount" : bboxCount,
             })
+            
+    session.close()
     if len(historyData) == 0:
         return {"historyData" : 0}
     return {"historyData": historyData}
@@ -348,10 +350,109 @@ async def specific_history(history_id):
                 "super_text" : super_text,
                 "super_wo_text" : super_wo_text,
             })
-            
+    
+    session.close()
     # return cropped + super img + text, (w&wo otsu), get yolo confidence
     return {
         "yolo_confidence" : avgYoloConf,
         "yolo_img_byte" : yolo_img_byte,
         "cns_data" : cns_data,
     }
+
+# delete multiple or single specified history by id
+@router.post("/delete/{history_id}")
+async def delete_specific_history(history_id):
+    # parsing list of history_id
+    id_list = history_id.split(",")
+    res = []
+    
+    with Session(db.engine) as session:
+        # for every id
+        for index, hId in enumerate(id_list):
+            # get img_input id
+            queryImgId = select(db.History.img_input_id).where(db.History.id == hId)
+            img_id = session.execute(queryImgId).scalars().one_or_none()
+            
+            # select img input file path
+            querryImgInputPath = select(db.ImgInput.img_path).where(db.ImgInput.id == img_id)
+            imgInputPath = session.execute(querryImgInputPath).scalars().one_or_none()
+            
+            # get bounding-box id
+            queryBboxId = select(db.BoundingBox.id).where(db.BoundingBox.img_input_id == img_id)
+            bboxIdList = session.execute(queryBboxId).scalars().all()
+            bboxRes = []
+            
+            # delete for every bounding-box
+            for bboxId in bboxIdList:
+                # delete bounding box
+                if session.execute(select(db.BoundingBox).where(db.BoundingBox.id == bboxId)).one_or_none() != None:
+                    delBbox = delete(db.BoundingBox).where(db.BoundingBox.id == bboxId)
+                    delBboxRes = session.execute(delBbox)
+                    bboxRes.append(delBboxRes)
+                
+            # get cropped & super id
+            queryCnS = select(db.CroppedAndSuper).where(db.CroppedAndSuper.history_id == history_id)
+            resultCnS = session.execute(queryCnS).scalars().all()
+
+            cnsRes = cropRes = superRes = []
+
+            # delete for every cropped and super image within img_input
+            for cnsImg in resultCnS:
+                # get cropped img file name
+                queryCropFileName = select(db.CroppedImg.img_path).where(db.CroppedImg.id == cnsImg.cropped_img_id)
+                cropFileName = session.execute(queryCropFileName).scalars().one_or_none()
+                
+                # delete cropped img
+                if cropFileName != None:
+                    if os.path.exists(cropFileName):
+                        os.remove(cropFileName)
+                        
+                if session.execute(select(db.CroppedImg).where(db.CroppedImg.id == cnsImg.cropped_img_id)).one_or_none() != None:
+                    delCropped = delete(db.CroppedImg).where(db.CroppedImg.id == cnsImg.cropped_img_id)
+                    delCroppedRes = session.execute(delCropped)
+                    cropRes.append(delCroppedRes)
+                    
+                # get super_img id
+                querySuperFileName = select(db.SuperImg.img_path).where(db.SuperImg.id == cnsImg.super_img_id)
+                superFileName = session.execute(querySuperFileName).scalars().one_or_none()
+                
+                # delete super_img
+                if superFileName != None:
+                    if os.path.exists(superFileName):
+                        os.remove(superFileName)
+                
+                if session.execute(select(db.SuperImg).where(db.SuperImg.id == cnsImg.super_img_id)).one_or_none() != None:
+                    delSuper = delete(db.SuperImg).where(db.SuperImg.id == cnsImg.super_img_id)
+                    delSuperRes = session.execute(delSuper)
+                    superRes.append(delSuperRes)
+                
+                
+                # delete CnS row
+                if session.execute(select(db.CroppedAndSuper).where(db.CroppedAndSuper.history_id == history_id)).first() != None:
+                    delCns = delete(db.CroppedAndSuper).where(db.CroppedAndSuper.history_id == history_id)
+                    delCnsRes = session.execute(delCns)
+                    cnsRes.append(delCnsRes)
+                
+            # delete img_input files
+            if imgInputPath != None:
+                if os.path.exists(imgInputPath):
+                    os.remove(imgInputPath)
+                
+            # delete history
+            if session.execute(select(db.History).where(db.History.id == hId)).one_or_none() != None:
+                delHistory = delete(db.History).where(db.History.id == hId)
+                historyRes = session.execute(delHistory)
+            
+            res.append(
+                {
+                    "delHistory": historyRes,
+                    "delBBox": bboxRes,
+                    "delCnS": cnsRes,
+                    "delCrop": cropRes,
+                    "delSuper": superRes,
+                }
+            )
+            session.commit()
+        
+        session.close()
+    return res
