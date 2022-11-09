@@ -167,32 +167,32 @@ cython_debug/
 # End of https://www.toptal.com/developers/gitignore/api/python
 
 *.db
-image-dataset/cropped-img/*.jpg
-image-dataset/cropped-img/*.jpeg
+app/image-dataset/cropped-img/*.jpg
+app/image-dataset/cropped-img/*.jpeg
 
-image-dataset/highres-img/*.jpeg
-image-dataset/highres-img/*.jpg
+app/image-dataset/highres-img/*.jpeg
+app/image-dataset/highres-img/*.jpg
 
-image-dataset/lowres-img/*.jpg
-image-dataset/lowres-img/*.jpeg
+app/image-dataset/lowres-img/*.jpg
+app/image-dataset/lowres-img/*.jpeg
 
-image-dataset/super-result/*.jpeg
-image-dataset/super-result/*.jpg
+app/image-dataset/super-result/*.jpeg
+app/image-dataset/super-result/*.jpg
 
-image-dataset/test-folder/*.jpg
-image-dataset/test-folder/*.jpeg
+app/image-dataset/test-folder/*.jpg
+app/image-dataset/test-folder/*.jpeg
 
-image-dataset/evaluation/"Eval SRGAN"/*.jpg
+app/image-dataset/evaluation/"Eval SRGAN"/*.jpg
 image-dataset/evaluation/"Eval SRGAN"/*.jpeg
 
-image-dataset/evaluation/"Eval Yolo"/*.jpg
-image-dataset/evaluation/"Eval Yolo"/*.jpeg
-image-dataset/evaluation/"Eval Yolo"/*.png
+app/image-dataset/evaluation/"Eval Yolo"/*.jpg
+app/image-dataset/evaluation/"Eval Yolo"/*.jpeg
+app/image-dataset/evaluation/"Eval Yolo"/*.png
 
-json_result/*.json
-json_result/*.txt
+app/json_result/*.json
+app/json_result/*.txt
 
-darknet/
+app/darknet/
 
 app/model/*.weights
 app/model/*.h5
