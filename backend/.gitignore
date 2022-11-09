@@ -182,6 +182,13 @@ image-dataset/super-result/*.jpg
 image-dataset/test-folder/*.jpg
 image-dataset/test-folder/*.jpeg
 
+image-dataset/evaluation/"Eval SRGAN"/*.jpg
+image-dataset/evaluation/"Eval SRGAN"/*.jpeg
+
+image-dataset/evaluation/"Eval Yolo"/*.jpg
+image-dataset/evaluation/"Eval Yolo"/*.jpeg
+image-dataset/evaluation/"Eval Yolo"/*.png
+
 json_result/*.json
 json_result/*.txt
 
