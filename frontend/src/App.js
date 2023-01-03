@@ -6,6 +6,7 @@ import History from "./pages/History";
 import HistoryList from "./pages/HistoryList";
 import HistoryDetail from "./pages/HistoryDetail";
 import About from "./pages/About";
+import Loading from "./pages/Loading";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -23,6 +24,7 @@ const App = () => {
             <Route path=':postSlug' element={<HistoryDetail />} />
           </Route>
           <Route path='/tentang' element={<About />} />
+          <Route path='/proses' element={<Loading />} />
         </Routes>
         <Footer />
       </Router>

@@ -1,7 +1,11 @@
 import React from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 
 function DropBox(props) {
+  let navigate = useNavigate();
+
   const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
     useDropzone({
       accept: {
@@ -14,7 +18,7 @@ function DropBox(props) {
       <li className='font-bold text-center list-none' key={file.path}>
         Uploaded File:
         <br />
-        {file.path} - {file.size} bytes
+        {file.path} - {file.size} bytes{" "}
       </li>
     </div>
   ));
@@ -41,6 +45,25 @@ function DropBox(props) {
     );
   }
 
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData();
+    const [file] = acceptedFiles;
+    formData.append("file", file);
+    try {
+      await axios({
+        method: "post",
+        url: "http://localhost:8000/upload-img",
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
+      }).then(function (response) {
+        navigate("/proses", { state: response.data });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   function LabelText(props) {
     if (fileRejectionItems[0]) {
       return fileRejectionItems;
@@ -55,7 +78,7 @@ function DropBox(props) {
 
   return (
     <div className='flex container flex-col justify-center items-center mx-auto mt-16 w-full'>
-      <form action='/hasil' method='post'>
+      <form onSubmit={handleSubmit}>
         <div className='mx-auto hover:bg-gray-100'>
           <div {...getRootProps({ className: "dropzone" })}>
             <label

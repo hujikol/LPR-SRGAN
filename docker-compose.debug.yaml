@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  backend:
+    build: ./backend
+    ports: 
+      - "8000:8000"
+      - "9003:9003"
+    volumes:
+      - ./backend/app:/home/app/app
+    environment:
+      - WORKSPACE=/home/app/app    
+    command: ["sh", "-c", "pip3 install debugpy -t /tmp && python3 /tmp/debugpy --wait-for-client --listen 0.0.0.0:9003 -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload"]
+
+  frontend:
+    build: ./frontend
+    ports: 
+      - "3000:3000"
+    volumes:
+      - ./frontend:/home/app
+    environment:
+      - WATCHPACK_POLLING=true
